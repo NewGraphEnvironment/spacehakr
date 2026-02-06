@@ -1,0 +1,170 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# spacehakr <img src="man/figures/logo.png" align="right" height="139" alt="spacehakr hex sticker" />
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/NewGraphEnvironment/spacehakr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NewGraphEnvironment/spacehakr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+Spatial analysis and geospatial data tools for R — raster processing, WFS access, GDAL command building, spatial joins, and STAC catalog queries.
+
+## Installation
+
+```r
+# install.packages("pak")
+pak::pkg_install("NewGraphEnvironment/spacehakr")
+```
+
+## Examples
+
+```{r setup}
+library(spacehakr)
+library(sf)
+library(terra)
+```
+
+### Inspect Layers in a GeoPackage
+
+Query layer names and geometry types from any vector data source:
+
+```{r layer-info}
+# Get path to bundled test data
+gpkg_path <- system.file("extdata", "poly.gpkg", package = "spacehakr")
+
+spk_layer_info(gpkg_path)
+```
+
+### Compute Combined Extent from Multiple Rasters
+
+Calculate the union bounding box across multiple raster files:
+
+```{r rast-ext}
+# Get paths to bundled test rasters
+rast_files <- c(
+  system.file("extdata", "test1.tif", package = "spacehakr"),
+  system.file("extdata", "test2.tif", package = "spacehakr")
+)
+
+# Get combined extent
+bbox <- spk_rast_ext(rast_files)
+bbox
+```
+
+### Spatial Joins with Filtering
+
+Join points to polygons with optional column selection and filtering:
+
+```{r spatial-join}
+# Load bundled test data
+points <- st_read(
+  system.file("extdata", "points.gpkg", package = "spacehakr"), 
+  quiet = TRUE
+)
+polygons <- st_read(
+  system.file("extdata", "poly.gpkg", package = "spacehakr"), 
+  quiet = TRUE
+)
+
+# Join points to polygons, returning specific columns
+result <- spk_join(
+  target_tbl = points,
+  mask_tbl = polygons,
+  target_col_return = "id",
+  mask_col_return = "attribute_string"
+)
+
+result
+```
+
+### Build GDAL Warp Commands
+
+Generate GDAL command strings for raster reprojection:
+
+```{r gdalwarp}
+# Build a gdalwarp command (interactive = TRUE returns full command string)
+input_file <- system.file("extdata", "test1.tif", package = "spacehakr")
+
+cmd <- spk_gdalwarp(
+  path_in = input_file,
+  path_out = file.path(tempdir(), "output.tif"),
+  t_srs = "EPSG:3005",
+  target_resolution = c(10, 10),
+  resampling = "bilinear",
+  interactive = TRUE
+)
+
+cat(cmd)
+```
+
+### Download from GeoServer WFS
+
+Fetch vector data from BC's GeoServer (requires network access):
+
+```r
+# Download contour lines within a bounding box
+contours <- spk_geoserv_dlv(
+  url_geoserver = "https://openmaps.gov.bc.ca/geo/pub/ows",
+  dir_out = tempdir(),
+  layer_name_raw = "pub:WHSE_BASEMAPPING.TRIM_CONTOUR_LINES",
+  bbox = c(-123.5, 48.0, -123.0, 48.5),
+  crs = 4326
+)
+```
+
+### Query STAC Catalogs
+
+Calculate spectral indices from STAC items (requires `rstac` and network access):
+
+```r
+library(rstac)
+
+# Query Landsat data
+items <- stac("https://planetarycomputer.microsoft.com/api/stac/v1") |>
+  stac_search(
+    collections = "landsat-c2-l2",
+    bbox = c(-123.5, 48.0, -123.0, 48.5),
+    datetime = "2023-06-01/2023-08-31"
+  ) |>
+  post_request() |>
+  items_sign(sign_fn = sign_planetary_computer())
+
+# Calculate NDVI from the first item
+ndvi <- spk_stac_calc(
+  feature = items$features[[1]],
+  asset_a = "red",
+  asset_b = "nir08",
+  calc = "ndvi"
+)
+```
+
+## Function Reference
+
+| Function | Description |
+|----------|-------------|
+| `spk_layer_info()` | List layers and geometry types in vector sources |
+| `spk_rast_ext()` | Compute combined extent from multiple rasters |
+| `spk_join()` | Spatial join with filtering and column selection |
+| `spk_gdalwarp()` | Build GDAL warp commands |
+| `spk_geoserv_dlv()` | Download from GeoServer WFS |
+| `spk_stac_calc()` | Calculate indices from STAC items |
+| `spk_odm()` | Build OpenDroneMap commands |
+| `spk_res()` | Query raster resolution |
+| `spk_rast_rm_empty()` | Remove empty rasters from file lists |
+
+## License
+
+MIT
