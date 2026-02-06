@@ -1,15 +1,38 @@
 Package: spacehakr
-Title: What the Package Does (One Line, Title Case)
+Title: Spatial Analysis, Raster Processing, and Geospatial Data Access
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Allan", "Irvine", , "al@newgraphenvironment.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-3495-2128"))
+Description: Tools for spatial analysis, raster processing, and geospatial data 
+    access. Includes functions for GDAL/OpenDroneMap command building, GeoServer 
+    WFS downloads, STAC catalog queries, spatial joins, and raster operations.
+    Extracted from the ngr package's ngr_spk_* function family.
+License: MIT + file LICENSE
+Depends:
+    R (>= 4.1.0)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
+    mockery,
+    processx,
+    rstac,
+    stars,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: http://www.newgraphenvironment.com/spacehakr/
+URL: https://github.com/NewGraphEnvironment/spacehakr, https://newgraphenvironment.github.io/spacehakr/
+BugReports: https://github.com/NewGraphEnvironment/spacehakr/issues
+Imports:
+    chk,
+    cli,
+    dplyr,
+    fs,
+    glue,
+    httr,
+    purrr,
+    sf,
+    stringr,
+    terra,
+    tibble,
+    xml2
