@@ -29,11 +29,6 @@ library(sf)
 #> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
 library(terra)
 #> terra 1.8.93
-#> 
-#> Attaching package: 'terra'
-#> The following objects are masked from 'package:testthat':
-#> 
-#>     compare, describe
 ```
 
 ### Inspect Layers in a GeoPackage
@@ -124,8 +119,8 @@ cmd <- spk_gdalwarp(
 )
 
 cat(cmd)
-#> gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3005 -tr 10 10 -r bilinear \
-#>   -overwrite -multi -wo NUM_THREADS=ALL_CPUS input.tif output.tif
+#> gdalwarp -overwrite -multi -wo NUM_THREADS=ALL_CPUS -t_srs EPSG:3005 \
+#>   -r bilinear -tr 10 10 input.tif output.tif
 ```
 
 ### Download from GeoServer WFS
@@ -135,8 +130,9 @@ Fetch vector data from BC’s GeoServer (requires network access):
 ``` r
 # Download contour lines within a bounding box
 contours <- spk_geoserv_dlv(
-  url_base = "https://openmaps.gov.bc.ca/geo/pub",
-  layer = "WHSE_BASEMAPPING.TRIM_CONTOUR_LINES",
+  url_geoserver = "https://openmaps.gov.bc.ca/geo/pub/ows",
+  dir_out = tempdir(),
+  layer_name_raw = "pub:WHSE_BASEMAPPING.TRIM_CONTOUR_LINES",
   bbox = c(-123.5, 48.0, -123.0, 48.5),
   crs = 4326
 )
