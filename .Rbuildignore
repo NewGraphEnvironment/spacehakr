@@ -4,3 +4,7 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^CLAUDE\.md$
+^dev$
+^data-raw$
+^README\.Rmd$
