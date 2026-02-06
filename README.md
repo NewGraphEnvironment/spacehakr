@@ -109,9 +109,11 @@ Generate GDAL command strings for raster reprojection:
 
 ``` r
 # Build a gdalwarp command (interactive = TRUE returns full command string)
+input_file <- system.file("extdata", "test1.tif", package = "spacehakr")
+
 cmd <- spk_gdalwarp(
-  path_in = "input.tif",
-  path_out = "output.tif",
+  path_in = input_file,
+  path_out = file.path(tempdir(), "output.tif"),
   t_srs = "EPSG:3005",
   target_resolution = c(10, 10),
   resampling = "bilinear",
@@ -119,8 +121,7 @@ cmd <- spk_gdalwarp(
 )
 
 cat(cmd)
-#> gdalwarp -overwrite -multi -wo NUM_THREADS=ALL_CPUS -t_srs EPSG:3005 \
-#>   -r bilinear -tr 10 10 input.tif output.tif
+#> gdalwarp -overwrite -multi -wo NUM_THREADS=ALL_CPUS -t_srs EPSG:3005 -r bilinear -tr 10 10 /tmp/RtmpWmInno/temp_libpathd1f65705ea16/spacehakr/extdata/test1.tif /tmp/Rtmpc0pAHm/output.tif
 ```
 
 ### Download from GeoServer WFS
