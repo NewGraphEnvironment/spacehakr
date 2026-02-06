@@ -116,5 +116,5 @@ spk_gdalwarp <- function(path_in,
   }
 
   # Return the arguments as a vector
-  return(args)
+  args
 }

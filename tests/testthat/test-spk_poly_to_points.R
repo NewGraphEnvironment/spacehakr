@@ -15,24 +15,24 @@ points <- spk_poly_to_points(poly, col_density = "col_density", col_id = "region
 test_that("spk_poly_to_points generates correct number of points within tolerance", {
 
   # Expected number of points (density * area)
-  expected_A <- as.integer(poly$col_density[1] * sf::st_area(poly[1, ]))
-  expected_B <- as.integer(poly$col_density[2] * sf::st_area(poly[2, ]))
+  expected_a <- as.integer(poly$col_density[1] * sf::st_area(poly[1, ]))
+  expected_b <- as.integer(poly$col_density[2] * sf::st_area(poly[2, ]))
 
   # Tolerance range (±5%)
   tol <- 0.05
-  lower_A <- expected_A * (1 - tol)
-  upper_A <- expected_A * (1 + tol)
-  lower_B <- expected_B * (1 - tol)
-  upper_B <- expected_B * (1 + tol)
+  lower_a <- expected_a * (1 - tol)
+  upper_a <- expected_a * (1 + tol)
+  lower_b <- expected_b * (1 - tol)
+  upper_b <- expected_b * (1 + tol)
 
   # Check total point count within tolerance
-  actual_A <- sum(points$region == "A")
-  actual_B <- sum(points$region == "B")
+  actual_a <- sum(points$region == "A")
+  actual_b <- sum(points$region == "B")
 
-  expect_true(lower_A <= actual_A && actual_A <= upper_A,
-              info = paste("Expected:", expected_A, "Actual:", actual_A))
-  expect_true(lower_B <= actual_B && actual_B <= upper_B,
-              info = paste("Expected:", expected_B, "Actual:", actual_B))
+  expect_true(lower_a <= actual_a && actual_a <= upper_a,
+              info = paste("Expected:", expected_a, "Actual:", actual_a))
+  expect_true(lower_b <= actual_b && actual_b <= upper_b,
+              info = paste("Expected:", expected_b, "Actual:", actual_b))
 })
 
 test_that("spk_poly_to_points retains correct ID column name", {
@@ -72,5 +72,3 @@ test_that("spk_poly_to_points retains the original CRS", {
   # Check that the CRS of the result matches the input
   expect_equal(sf::st_crs(points), sf::st_crs(poly))
 })
-
-

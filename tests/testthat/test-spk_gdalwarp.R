@@ -1,7 +1,7 @@
 files_in <- c(
-    system.file("extdata", "test1.tif", package = "spacehakr"),
-    system.file("extdata", "test2.tif", package = "spacehakr")
-  )
+  system.file("extdata", "test1.tif", package = "spacehakr"),
+  system.file("extdata", "test2.tif", package = "spacehakr")
+)
 
 # burn to temp file
 file_out <- fs::path(tempdir(), "test_out.tif")

@@ -46,7 +46,3 @@ spk_layer_info <- function(path) {
     ) |>
     dplyr::select(-driver)
 }
-
-
-
-

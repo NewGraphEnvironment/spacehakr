@@ -88,16 +88,16 @@ spk_odm <- function(path_project, params_default = c("--dtm", "--dsm", "--pc-qua
 
   # Construct arguments
   args <- c(
-    'run', '--rm',
-    '-v', volume_mapping,
-    'opendronemap/odm',
-    '--project-path', '/datasets/',
+    "run", "--rm",
+    "-v", volume_mapping,
+    "opendronemap/odm",
+    "--project-path", "/datasets/",
     dir_select
   )
 
   # Add `-ti` if interactive
   if (interactive) {
-    args <- c('docker', 'run', '-ti', args[-1])
+    args <- c("docker", "run", "-ti", args[-1])
   }
 
   # Add opinionated parameters if provided
@@ -115,5 +115,5 @@ spk_odm <- function(path_project, params_default = c("--dtm", "--dsm", "--pc-qua
     return(paste(args, collapse = " "))
   }
 
-  return(args)
+  args
 }

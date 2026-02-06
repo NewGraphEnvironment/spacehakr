@@ -57,5 +57,5 @@ spk_poly_to_points <- function(sf_in, col_density, col_id = NULL) {
   sf_points <- sf::st_sf(setNames(data.frame(id_list), col_id), geometry = points)
   sf::st_crs(sf_points) <- crs_og
 
-  return(sf_points)
+  sf_points
 }

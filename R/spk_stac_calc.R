@@ -162,15 +162,15 @@
 #' }
 
 spk_stac_calc <- function(
-    feature,
-    aoi = NULL,
-    asset_a = "red",
-    asset_b = "nir08",
-    asset_c = NULL,
-    calc = "ndvi",
-    vsi_prefix = "/vsicurl/",
-    quiet = FALSE,
-    timing = FALSE
+  feature,
+  aoi = NULL,
+  asset_a = "red",
+  asset_b = "nir08",
+  asset_c = NULL,
+  calc = "ndvi",
+  vsi_prefix = "/vsicurl/",
+  quiet = FALSE,
+  timing = FALSE
 ) {
   chk::chk_string(asset_a)
   if (!is.null(asset_b)) chk::chk_string(asset_b)

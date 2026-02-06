@@ -45,15 +45,15 @@
 #' @importFrom sf st_crs st_transform st_bbox st_as_sfc
 #' @importFrom cli cli_alert_warning
 spk_geoserv_dlv <- function(
-    url_geoserver = "https://maps.skeenasalmon.info/geoserver/ows",
-    dir_out = NULL,
-    layer_name_raw = NULL,
-    layer_name_out = stringr::str_extract(layer_name_raw, "(?<=:).*"),
-    crs = 3005,
-    bbox = NULL,
-    format_out = "json",
-    discard_no_features = TRUE
-){
+  url_geoserver = "https://maps.skeenasalmon.info/geoserver/ows",
+  dir_out = NULL,
+  layer_name_raw = NULL,
+  layer_name_out = stringr::str_extract(layer_name_raw, "(?<=:).*"),
+  crs = 3005,
+  bbox = NULL,
+  format_out = "json",
+  discard_no_features = TRUE
+) {
   chk::chk_string(url_geoserver)
   chk::chk_string(layer_name_raw)
   chk::chk_string(layer_name_out)
@@ -82,7 +82,7 @@ spk_geoserv_dlv <- function(
         bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), target_crs))
       }
     }
-    bbox_str <- paste(c(bbox, paste0("EPSG:", crs)), collapse = ",")
+  bbox_str <- paste(c(bbox, paste0("EPSG:", crs)), collapse = ",")
     query_params$bbox <- bbox_str
   }
 
@@ -93,8 +93,7 @@ spk_geoserv_dlv <- function(
   if (httr::status_code(response) == 200) {
     if (format_out == "json") {
       text <- readLines(file_out, n = 10, warn = FALSE)
-      if (any(grepl('"features"\\s*:\\s*\\[\\s*\\]', text)))
-      {
+      if (any(grepl('"features"\\s*:\\s*\\[\\s*\\]', text))) {
         cli::cli_alert_warning("Downloaded layer has 0 features: {.file {file_out}}")
         if (discard_no_features) {
           fs::file_delete(file_out)

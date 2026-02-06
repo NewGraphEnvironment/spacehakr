@@ -40,12 +40,14 @@ spk_q_layer_info <- function(path, attrs = c("id", "name", "source", "providerKe
   chk::chk_character(attrs)
 
   if (grepl("\\.qgz$", path, ignore.case = TRUE)) {
-    tmpdir <- fs::path_temp("qgz"); fs::dir_create(tmpdir)
+    tmpdir <- fs::path_temp("qgz")
+    fs::dir_create(tmpdir)
     utils::unzip(path, files = "project.qgs", exdir = tmpdir)
     path <- fs::path(tmpdir, "project.qgs")
   }
 
-  doc <- xml2::read_xml(path); xml2::xml_ns_strip(doc)
+  doc <- xml2::read_xml(path)
+  xml2::xml_ns_strip(doc)
   proj_dir <- fs::path_dir(path)
 
   nodes <- xml2::xml_find_all(doc, "//layer-tree-layer[@id]")

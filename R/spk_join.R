@@ -27,18 +27,18 @@
 #' @importFrom cli cli_warn
 #' @export
 spk_join <- function(
-    target_tbl,
-    mask_tbl,
-    target_col_return = '*',
-    mask_col_return = NULL,
-    mask_col_filter = NULL,
-    mask_col_filter_values = NULL,
-    mask_col_filter_values_negate = FALSE,
-    join_fun = sf::st_intersects,
-    path_gpkg = NULL,
-    collapse = FALSE,
-    target_col_collapse = NULL,
-    ...
+  target_tbl,
+  mask_tbl,
+  target_col_return = "*",
+  mask_col_return = NULL,
+  mask_col_filter = NULL,
+  mask_col_filter_values = NULL,
+  mask_col_filter_values_negate = FALSE,
+  join_fun = sf::st_intersects,
+  path_gpkg = NULL,
+  collapse = FALSE,
+  target_col_collapse = NULL,
+  ...
 ) {
   # read mask_tbl from gpkg if path provided
   if (!is.null(path_gpkg)) {
@@ -68,11 +68,11 @@ spk_join <- function(
   }
 
   result <- sf::st_join(
-    target_tbl,
-    mask_tbl,
+  target_tbl,
+  mask_tbl,
     left = TRUE,
     join = join_fun,
-    ...
+  ...
   )
 
   if (!identical(target_col_return, "*")) {
@@ -100,5 +100,5 @@ spk_join <- function(
     }
   }
 
-  return(result)
+  result
 }

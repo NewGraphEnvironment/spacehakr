@@ -76,5 +76,5 @@ spk_rast_ext <- function(x, crs_out = NULL) {
     bbox <- sf::st_bbox(bbox)
   }
 
-  return(bbox)
+  bbox
 }

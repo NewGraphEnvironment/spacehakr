@@ -25,9 +25,9 @@
 #' @importFrom chk chk_character
 #' @export
 spk_res <- function(
-    path,
-    crs_out = "EPSG:3005"
-){
+  path,
+  crs_out = "EPSG:3005"
+) {
   chk::chk_character(path)
   chk::chk_character(crs_out)
 

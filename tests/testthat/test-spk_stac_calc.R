@@ -187,7 +187,7 @@ testthat::test_that(".spk_calc stacks RGB correctly", {
 
   # Should have 3 layers
 
-testthat::expect_equal(terra::nlyr(result), 3)
+  testthat::expect_equal(terra::nlyr(result), 3)
 
   # Check values are preserved
   testthat::expect_equal(as.vector(terra::values(result[[1]])), c(100, 200, 150, 50))

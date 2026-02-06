@@ -52,7 +52,7 @@ testthat::test_that("spk_join returns multiple rows when not collapsing", {
   res <- spk_join(
     target_tbl = points,
     mask_tbl = "poly",
-    mask_col_return = c("attribute_numeric","attribute_numeric2", "attribute_string"),
+    mask_col_return = c("attribute_numeric", "attribute_numeric2", "attribute_string"),
     path_gpkg = path_poly
   )
 
@@ -62,7 +62,7 @@ testthat::test_that("spk_join returns multiple rows when not collapsing", {
 res <- spk_join(
   target_tbl = points,
   mask_tbl = "poly",
-  mask_col_return = c("attribute_numeric","attribute_numeric2", "attribute_string"),
+  mask_col_return = c("attribute_numeric", "attribute_numeric2", "attribute_string"),
   path_gpkg = path_poly
 )
 
@@ -80,5 +80,3 @@ test_that("spk_join warns on type change after collapsing and accepts list of co
     regexp = "attribute_numeric: integer to character.*attribute_numeric2: integer to character"
   )
 })
-
-
