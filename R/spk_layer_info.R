@@ -16,7 +16,7 @@
 #'
 #' @seealso [sf::st_layers()], [sf::st_read()], [sf::st_geometry_type()]
 #'
-#' @family spacehakr
+#' @family vector
 #'
 #' @importFrom sf st_layers st_read st_geometry_type
 #' @importFrom dplyr mutate select

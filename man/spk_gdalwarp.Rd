@@ -83,21 +83,7 @@ cat(cmd, "\n")
 \seealso{
 \href{https://gdal.org/en/stable/programs/gdalwarp.html}{gdalwarp documentation}
 
-Other spacehakr: 
-\code{\link{spk_join}()},
-\code{\link{spk_layer_info}()},
-\code{\link{spk_odm}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
-\code{\link{spk_rast_ext}()},
-\code{\link{spk_rast_not_empty}()},
-\code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
-
-Other processx: 
+Other command-builder: 
 \code{\link{spk_odm}()}
 }
-\concept{gdal}
-\concept{processx}
-\concept{spacehakr}
+\concept{command-builder}

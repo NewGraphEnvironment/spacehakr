@@ -19,7 +19,7 @@
 #'
 #' @return A sf object with the result of the spatial join. If `target_col_return` is not "*", only selected columns are returned.
 #'
-#' @family spacehakr
+#' @family vector
 #'
 #' @importFrom sf st_join st_read
 #' @importFrom dplyr filter select all_of group_by summarise across

@@ -18,7 +18,7 @@
 #' @importFrom cli cli_alert_info cli_alert_success
 #'
 #' @export
-#' @family spacehakr
+#' @family raster
 spk_rast_rm_empty <- function(path = NULL, delete = TRUE, regexp = "\\.(tif|tiff|vrt)$", quiet = FALSE) {
   chk::chk_not_null(path)
   chk::chk_string(path)

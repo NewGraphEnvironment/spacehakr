@@ -30,16 +30,9 @@ Uses \code{\link[=spk_rast_not_empty]{spk_rast_not_empty()}} to check each raste
 \seealso{
 \code{\link[=spk_rast_not_empty]{spk_rast_not_empty()}}, \code{\link[fs:dir_ls]{fs::dir_ls()}}, \code{\link[fs:delete]{fs::file_delete()}}, \code{\link[terra:rast]{terra::rast()}}, \code{\link[terra:values]{terra::values()}}
 
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
-\code{\link{spk_join}()},
-\code{\link{spk_layer_info}()},
-\code{\link{spk_odm}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
+Other raster: 
 \code{\link{spk_rast_ext}()},
 \code{\link{spk_rast_not_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
+\code{\link{spk_res}()}
 }
-\concept{spacehakr}
+\concept{raster}

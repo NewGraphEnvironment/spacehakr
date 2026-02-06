@@ -9,7 +9,7 @@
 #' @importFrom terra rast values
 #' @importFrom chk chk_file
 #' @export
-#' @family spacehakr
+#' @family raster
 spk_rast_not_empty <- function(f) {
   chk::chk_file(f)
   r <- terra::rast(f)

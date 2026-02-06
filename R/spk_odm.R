@@ -14,7 +14,7 @@
 #'
 #' @return [character] A vector of arguments to pass to `processx::run`, or a single string with the full command for
 #' terminal use if `interactive = TRUE`.
-#' @family spacehakr
+#' @family command-builder
 #'
 #' @examples
 #' \dontrun{
@@ -44,7 +44,7 @@
 #' paths <- c("/Volumes/backup_2022/backups/new_graph/archive/uav_imagery/skeena/bulkley/2024/8530_sandstone_test",
 #'            "/Volumes/backup_2022/backups/new_graph/archive/uav_imagery/skeena/bulkley/2024/8530_sandstone_test2")
 #'
-#' args2 <- lapply(paths, ngr::spk_odm)
+#' args2 <- lapply(paths, spk_odm)
 #'
 #' args2 |> purrr::walk(
 #'   ~ processx::run(
@@ -63,9 +63,6 @@
 #' For more details on the steps and arguments, see the OpenDroneMap documentation:
 #' \url{https://docs.opendronemap.org/arguments/}
 #'
-#' @family odm
-#' @family processx
-#' @family spacehakr
 #'
 #' @importFrom chk chk_string chk_dir chk_flag
 #' @importFrom fs path_dir

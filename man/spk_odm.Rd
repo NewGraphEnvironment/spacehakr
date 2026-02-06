@@ -68,7 +68,7 @@ cat(interactive_command, "\n")
 paths <- c("/Volumes/backup_2022/backups/new_graph/archive/uav_imagery/skeena/bulkley/2024/8530_sandstone_test",
            "/Volumes/backup_2022/backups/new_graph/archive/uav_imagery/skeena/bulkley/2024/8530_sandstone_test2")
 
-args2 <- lapply(paths, ngr::spk_odm)
+args2 <- lapply(paths, spk_odm)
 
 args2 |> purrr::walk(
   ~ processx::run(
@@ -81,33 +81,7 @@ args2 |> purrr::walk(
 
 }
 \seealso{
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
-\code{\link{spk_join}()},
-\code{\link{spk_layer_info}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
-\code{\link{spk_rast_ext}()},
-\code{\link{spk_rast_not_empty}()},
-\code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
-
-Other processx: 
+Other command-builder: 
 \code{\link{spk_gdalwarp}()}
-
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
-\code{\link{spk_join}()},
-\code{\link{spk_layer_info}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
-\code{\link{spk_rast_ext}()},
-\code{\link{spk_rast_not_empty}()},
-\code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
 }
-\concept{odm}
-\concept{processx}
-\concept{spacehakr}
+\concept{command-builder}

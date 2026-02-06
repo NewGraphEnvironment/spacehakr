@@ -9,7 +9,7 @@
 #' @param crs_out [character] The desired CRS (default is "EPSG:3005").
 #'
 #' @return [numeric] A vector of length two representing the resolution of the single pixel in metres in the specified CRS.
-#' @family spacehakr
+#' @family raster
 #'
 #' @details
 #' The function first calculates the extent and resolution of the raster, identifies the central pixel,

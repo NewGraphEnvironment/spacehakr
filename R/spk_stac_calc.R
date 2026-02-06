@@ -90,7 +90,7 @@
 #' @importFrom sf st_crs st_transform
 #' @importFrom terra crop ext mask rast vect
 #'
-#' @family spacehakr
+#' @family stac
 #' @export
 #' @examples
 #' \dontrun{

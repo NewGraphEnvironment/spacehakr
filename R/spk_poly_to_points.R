@@ -11,7 +11,7 @@
 #'
 #' @importFrom sf st_sample st_geometry st_sf st_area
 #' @importFrom chk chk_is chk_string chk_subset
-#' @family spacehakr
+#' @family vector
 #' @export
 #'
 #' @examples

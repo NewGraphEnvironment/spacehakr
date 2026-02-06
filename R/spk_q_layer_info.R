@@ -32,7 +32,7 @@
 #' @importFrom tibble as_tibble
 #' @importFrom dplyr mutate if_else select arrange
 #' @importFrom purrr map_dfc
-#' @family spacehakr
+#' @family qgis
 #' @export
 spk_q_layer_info <- function(path, attrs = c("id", "name", "source", "providerKey")) {
   # Validate input

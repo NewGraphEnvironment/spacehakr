@@ -53,16 +53,8 @@ Joins a target \link[sf:sf]{sf::sf} object with a mask \link[sf:sf]{sf::sf} obje
 Optional filtering and selection of columns from the mask can be applied.
 }
 \seealso{
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
+Other vector: 
 \code{\link{spk_layer_info}()},
-\code{\link{spk_odm}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
-\code{\link{spk_rast_ext}()},
-\code{\link{spk_rast_not_empty}()},
-\code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
+\code{\link{spk_poly_to_points}()}
 }
-\concept{spacehakr}
+\concept{vector}

@@ -36,6 +36,7 @@
 #' )
 #' }
 #'
+#' @family geoserver
 #' @export
 #' @importFrom chk chk_string chk_dir chk_not_null chk_flag
 #' @importFrom fs dir_create path path_abs file_delete

@@ -16,16 +16,9 @@ spk_rast_not_empty(f)
 Determines whether a raster file contains any non-zero values.
 }
 \seealso{
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
-\code{\link{spk_join}()},
-\code{\link{spk_layer_info}()},
-\code{\link{spk_odm}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
+Other raster: 
 \code{\link{spk_rast_ext}()},
 \code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
+\code{\link{spk_res}()}
 }
-\concept{spacehakr}
+\concept{raster}

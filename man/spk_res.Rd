@@ -32,16 +32,9 @@ spk_res(path, crs_out)
 
 }
 \seealso{
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
-\code{\link{spk_join}()},
-\code{\link{spk_layer_info}()},
-\code{\link{spk_odm}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
+Other raster: 
 \code{\link{spk_rast_ext}()},
 \code{\link{spk_rast_not_empty}()},
-\code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_stac_calc}()}
+\code{\link{spk_rast_rm_empty}()}
 }
-\concept{spacehakr}
+\concept{raster}

@@ -51,9 +51,7 @@
 #' transformation. Note that `gdalwarp` requires GDAL to be installed on your system. On macOS, you can install GDAL
 #' using Homebrew by running `brew install gdal`. For more details on `gdalwarp`, visit: <https://gdal.org/en/stable/programs/gdalwarp.html>.
 #'
-#' @family gdal
-#' @family spacehakr
-#' @family processx
+#' @family command-builder
 #'
 #' @seealso [gdalwarp documentation](https://gdal.org/en/stable/programs/gdalwarp.html)
 #'

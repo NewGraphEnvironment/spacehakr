@@ -26,16 +26,8 @@ The \code{driver} column is removed from the output as it may contain invalid en
 \seealso{
 \code{\link[sf:st_layers]{sf::st_layers()}}, \code{\link[sf:st_read]{sf::st_read()}}, \code{\link[sf:st_geometry_type]{sf::st_geometry_type()}}
 
-Other spacehakr: 
-\code{\link{spk_gdalwarp}()},
+Other vector: 
 \code{\link{spk_join}()},
-\code{\link{spk_odm}()},
-\code{\link{spk_poly_to_points}()},
-\code{\link{spk_q_layer_info}()},
-\code{\link{spk_rast_ext}()},
-\code{\link{spk_rast_not_empty}()},
-\code{\link{spk_rast_rm_empty}()},
-\code{\link{spk_res}()},
-\code{\link{spk_stac_calc}()}
+\code{\link{spk_poly_to_points}()}
 }
-\concept{spacehakr}
+\concept{vector}

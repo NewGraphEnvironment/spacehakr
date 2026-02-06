@@ -63,3 +63,4 @@ spk_geoserv_dl(
 \seealso{
 \code{\link[fs:create]{fs::dir_create()}}, \code{\link[fs:path]{fs::path()}}, \code{\link[sf:st_bbox]{sf::st_bbox()}}, \code{\link[sf:st_transform]{sf::st_transform()}}, \code{\link[cli:cli_alert]{cli::cli_alert_warning()}}
 }
+\concept{geoserver}
