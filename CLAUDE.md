@@ -14,20 +14,20 @@ access. Extracted from the `ngr_spk_*` function family in the
 
 Functions are renamed from `ngr_spk_*` to `spk_*`:
 
-| ngr (source)               | spacehakr (target)     | Purpose                                        |
-|----------------------------|------------------------|------------------------------------------------|
-| `ngr_spk_gdalwarp()`       | `spk_gdalwarp()`       | GDALWarp command argument builder              |
-| `ngr_spk_geoserv_dlv()`    | `spk_geoserv_dlv()`    | Download vector from GeoServer WFS             |
-| `ngr_spk_join()`           | `spk_join()`           | Spatial join with optional mask filtering      |
-| `ngr_spk_layer_info()`     | `spk_layer_info()`     | Summarise layers/geometry types in data source |
-| `ngr_spk_odm()`            | `spk_odm()`            | Docker command builder for OpenDroneMap        |
-| `ngr_spk_poly_to_points()` | `spk_poly_to_points()` | Generate regular points inside polygons        |
-| `ngr_spk_q_layer_info()`   | `spk_q_layer_info()`   | Extract layer info from QGIS project           |
-| `ngr_spk_rast_ext()`       | `spk_rast_ext()`       | Combined extent from multiple rasters          |
-| `ngr_spk_rast_not_empty()` | `spk_rast_not_empty()` | Check if raster has non-zero data              |
-| `ngr_spk_rast_rm_empty()`  | `spk_rast_rm_empty()`  | Remove empty raster files                      |
-| `ngr_spk_res()`            | `spk_res()`            | Extract raster resolution                      |
-| `ngr_spk_stac_calc()`      | `spk_stac_calc()`      | Retrieve/calculate spectral indices from STAC  |
+| ngr (source)               | spacehakr (target)                                                                                     | Purpose                                        |
+|----------------------------|--------------------------------------------------------------------------------------------------------|------------------------------------------------|
+| `ngr_spk_gdalwarp()`       | [`spk_gdalwarp()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_gdalwarp.md)             | GDALWarp command argument builder              |
+| `ngr_spk_geoserv_dlv()`    | [`spk_geoserv_dlv()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_geoserv_dlv.md)       | Download vector from GeoServer WFS             |
+| `ngr_spk_join()`           | [`spk_join()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_join.md)                     | Spatial join with optional mask filtering      |
+| `ngr_spk_layer_info()`     | [`spk_layer_info()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_layer_info.md)         | Summarise layers/geometry types in data source |
+| `ngr_spk_odm()`            | [`spk_odm()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_odm.md)                       | Docker command builder for OpenDroneMap        |
+| `ngr_spk_poly_to_points()` | [`spk_poly_to_points()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_poly_to_points.md) | Generate regular points inside polygons        |
+| `ngr_spk_q_layer_info()`   | [`spk_q_layer_info()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_q_layer_info.md)     | Extract layer info from QGIS project           |
+| `ngr_spk_rast_ext()`       | [`spk_rast_ext()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_ext.md)             | Combined extent from multiple rasters          |
+| `ngr_spk_rast_not_empty()` | [`spk_rast_not_empty()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_not_empty.md) | Check if raster has non-zero data              |
+| `ngr_spk_rast_rm_empty()`  | [`spk_rast_rm_empty()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_rm_empty.md)   | Remove empty raster files                      |
+| `ngr_spk_res()`            | [`spk_res()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_res.md)                       | Extract raster resolution                      |
+| `ngr_spk_stac_calc()`      | [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md)           | Retrieve/calculate spectral indices from STAC  |
 
 Tests transfer with the same rename pattern.
 
@@ -48,9 +48,14 @@ devtools::install()
 ## Function Naming
 
 All exported functions use prefix `spk_`: - `spk_rast_*` - Raster
-operations - `spk_gdalwarp()`, `spk_odm()` - External tool command
-builders - `spk_geoserv_*`, `spk_stac_*` - Remote data access -
-`spk_join()`, `spk_poly_to_points()`, `spk_layer_info()` -
+operations -
+[`spk_gdalwarp()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_gdalwarp.md),
+[`spk_odm()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_odm.md) -
+External tool command builders - `spk_geoserv_*`, `spk_stac_*` - Remote
+data access -
+[`spk_join()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_join.md),
+[`spk_poly_to_points()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_poly_to_points.md),
+[`spk_layer_info()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_layer_info.md) -
 Vector/spatial operations
 
 ## Architecture
@@ -110,7 +115,7 @@ assignment with `=` (use `<-`)
 ### KISS (Keep It Simple)
 
 - One function per file, named to match (`spk_join.R` contains
-  `spk_join()`)
+  [`spk_join()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_join.md))
 - Flat control flow preferred over deeply nested logic
 - Early returns for guard clauses
 - Pipe chains (`|>`) for data transformation, not for side effects

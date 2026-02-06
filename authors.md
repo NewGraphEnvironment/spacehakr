@@ -2,18 +2,22 @@
 
 ## Authors
 
-- **First Last**. Author, maintainer.
+- **Allan Irvine**. Author, maintainer.
+  [](https://orcid.org/0000-0002-3495-2128)
 
 ## Citation
 
-Last F (2026). *spacehakr: What the Package Does (One Line, Title
-Case)*. R package version 0.0.0.9000,
-<http://www.newgraphenvironment.com/spacehakr/>.
+Source:
+[`DESCRIPTION`](https://github.com/NewGraphEnvironment/spacehakr/blob/main/DESCRIPTION)
+
+Irvine A (2026). *spacehakr: Spatial Analysis, Raster Processing, and
+Geospatial Data Access*. R package version 0.0.0.9000,
+<https://github.com/NewGraphEnvironment/spacehakr>.
 
     @Manual{,
-      title = {spacehakr: What the Package Does (One Line, Title Case)},
-      author = {First Last},
+      title = {spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access},
+      author = {Allan Irvine},
       year = {2026},
       note = {R package version 0.0.0.9000},
-      url = {http://www.newgraphenvironment.com/spacehakr/},
+      url = {https://github.com/NewGraphEnvironment/spacehakr},
     }
