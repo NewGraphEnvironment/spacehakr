@@ -21,6 +21,15 @@
 #'
 #' @family vector
 #'
+#' @examples
+#' \dontrun{
+#' # Basic spatial join between target and mask data
+#' result <- spk_join(
+#'   target_tbl = my_points,
+#'   mask_tbl = my_polygons
+#' )
+#' }
+#'
 #' @importFrom sf st_join st_read
 #' @importFrom dplyr filter select all_of group_by summarise across
 #' @importFrom chk chk_s3_class chk_string chk_flag
@@ -68,11 +77,11 @@ spk_join <- function(
   }
 
   result <- sf::st_join(
-  target_tbl,
-  mask_tbl,
+    target_tbl,
+    mask_tbl,
     left = TRUE,
     join = join_fun,
-  ...
+    ...
   )
 
   if (!identical(target_col_return, "*")) {
