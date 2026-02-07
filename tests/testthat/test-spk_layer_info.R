@@ -66,7 +66,7 @@ test_that("spk_layer_info returns NA for layers with no geometry", {
   tmpfile <- tempfile(fileext = ".gpkg")
   on.exit(unlink(tmpfile), add = TRUE)
   
-  # Create an empty sf object
+  # Create an empty sf object (0 features)
   empty_sf <- sf::st_sf(
     id = integer(0),
     geometry = sf::st_sfc(crs = 4326)
@@ -76,7 +76,11 @@ test_that("spk_layer_info returns NA for layers with no geometry", {
   
   result <- spk_layer_info(tmpfile)
   
-  expect_true(is.na(result$geomtype[result$name == "empty"]))
+  # Layer with 0 features returns NA for geomtype
+  # (tryCatch in spk_layer_info returns NA_character_ when geom length is 0)
+  expect_equal(nrow(result), 1)
+  expect_equal(result$name[1], "empty")
+  expect_true(is.na(result$geomtype[1]))
 })
 
 test_that("spk_layer_info errors on non-existent file", {

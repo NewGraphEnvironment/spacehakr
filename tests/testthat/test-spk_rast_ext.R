@@ -83,7 +83,7 @@ test_that("spk_rast_ext errors when rasters have different CRS", {
   
   expect_error(
     spk_rast_ext(c(f1, f2)),
-    "multiple CRS"
+    "Found multiple CRS values"
   )
 })
 
