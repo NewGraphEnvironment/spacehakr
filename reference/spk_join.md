@@ -108,3 +108,15 @@ is not "\*", only selected columns are returned.
 Other vector:
 [`spk_layer_info()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_layer_info.md),
 [`spk_poly_to_points()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_poly_to_points.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Basic spatial join between target and mask data
+result <- spk_join(
+  target_tbl = my_points,
+  mask_tbl = my_polygons
+)
+} # }
+```

@@ -57,3 +57,12 @@ Other raster:
 [`spk_rast_ext()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_ext.md),
 [`spk_rast_not_empty()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_not_empty.md),
 [`spk_res()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_res.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Remove empty rasters from a directory
+spk_rast_rm_empty("path/to/rasters")
+} # }
+```

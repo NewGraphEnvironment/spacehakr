@@ -46,3 +46,12 @@ entries for further data frame operations.
 Other vector:
 [`spk_join()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_join.md),
 [`spk_poly_to_points()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_poly_to_points.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Get layer information from a GeoPackage
+layer_info <- spk_layer_info("path/to/data.gpkg")
+} # }
+```

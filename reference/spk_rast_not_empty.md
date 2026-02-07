@@ -26,3 +26,12 @@ Other raster:
 [`spk_rast_ext()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_ext.md),
 [`spk_rast_rm_empty()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_rm_empty.md),
 [`spk_res()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_res.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Check if a raster has non-zero data
+has_data <- spk_rast_not_empty("path/to/raster.tif")
+} # }
+```
