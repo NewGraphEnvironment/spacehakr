@@ -23,6 +23,13 @@ For each layer, attempts to read a single feature using an SQL query and determi
 Layers with no geometry or errors in reading are safely assigned \code{NA}.
 The \code{driver} column is removed from the output as it may contain invalid entries for further data frame operations.
 }
+\examples{
+\dontrun{
+# Get layer information from a GeoPackage
+layer_info <- spk_layer_info("path/to/data.gpkg")
+}
+
+}
 \seealso{
 \code{\link[sf:st_layers]{sf::st_layers()}}, \code{\link[sf:st_read]{sf::st_read()}}, \code{\link[sf:st_geometry_type]{sf::st_geometry_type()}}
 

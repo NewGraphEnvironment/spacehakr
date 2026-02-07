@@ -27,6 +27,13 @@ spk_rast_rm_empty(
 Scans a directory for raster files (e.g., .tif, .tiff, .vrt) and removes those that contain only zero values.
 Uses \code{\link[=spk_rast_not_empty]{spk_rast_not_empty()}} to check each raster.
 }
+\examples{
+\dontrun{
+# Remove empty rasters from a directory
+spk_rast_rm_empty("path/to/rasters")
+}
+
+}
 \seealso{
 \code{\link[=spk_rast_not_empty]{spk_rast_not_empty()}}, \code{\link[fs:dir_ls]{fs::dir_ls()}}, \code{\link[fs:delete]{fs::file_delete()}}, \code{\link[terra:rast]{terra::rast()}}, \code{\link[terra:values]{terra::values()}}
 
