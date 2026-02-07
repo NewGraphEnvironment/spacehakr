@@ -18,6 +18,12 @@
 #'
 #' @family vector
 #'
+#' @examples
+#' \dontrun{
+#' # Get layer information from a GeoPackage
+#' layer_info <- spk_layer_info("path/to/data.gpkg")
+#' }
+#'
 #' @importFrom sf st_layers st_read st_geometry_type
 #' @importFrom dplyr mutate select
 #' @importFrom purrr map_chr

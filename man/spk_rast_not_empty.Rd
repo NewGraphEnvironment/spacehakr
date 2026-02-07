@@ -15,6 +15,13 @@ spk_rast_not_empty(f)
 \description{
 Determines whether a raster file contains any non-zero values.
 }
+\examples{
+\dontrun{
+# Check if a raster has non-zero data
+has_data <- spk_rast_not_empty("path/to/raster.tif")
+}
+
+}
 \seealso{
 Other raster: 
 \code{\link{spk_rast_ext}()},

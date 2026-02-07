@@ -6,6 +6,12 @@
 #'
 #' @return [logical] `TRUE` if the raster has any non-zero values, otherwise `FALSE`.
 #'
+#' @examples
+#' \dontrun{
+#' # Check if a raster has non-zero data
+#' has_data <- spk_rast_not_empty("path/to/raster.tif")
+#' }
+#'
 #' @importFrom terra rast values
 #' @importFrom chk chk_file
 #' @export

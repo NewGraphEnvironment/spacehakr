@@ -52,6 +52,16 @@ A sf object with the result of the spatial join. If \code{target_col_return} is 
 Joins a target \link[sf:sf]{sf::sf} object with a mask \link[sf:sf]{sf::sf} object using a specified spatial predicate.
 Optional filtering and selection of columns from the mask can be applied.
 }
+\examples{
+\dontrun{
+# Basic spatial join between target and mask data
+result <- spk_join(
+  target_tbl = my_points,
+  mask_tbl = my_polygons
+)
+}
+
+}
 \seealso{
 Other vector: 
 \code{\link{spk_layer_info}()},

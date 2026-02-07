@@ -17,6 +17,12 @@
 #' @importFrom purrr keep
 #' @importFrom cli cli_alert_info cli_alert_success
 #'
+#' @examples
+#' \dontrun{
+#' # Remove empty rasters from a directory
+#' spk_rast_rm_empty("path/to/rasters")
+#' }
+#'
 #' @export
 #' @family raster
 spk_rast_rm_empty <- function(path = NULL, delete = TRUE, regexp = "\\.(tif|tiff|vrt)$", quiet = FALSE) {
