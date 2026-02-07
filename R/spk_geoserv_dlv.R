@@ -41,9 +41,9 @@
 #' @importFrom chk chk_string chk_dir chk_not_null chk_flag
 #' @importFrom fs dir_create path path_abs file_delete
 #' @importFrom stringr str_extract
-#' @importFrom httr GET write_disk status_code
 #' @importFrom sf st_crs st_transform st_bbox st_as_sfc
-#' @importFrom cli cli_alert_warning
+#' @importFrom cli cli_alert_warning cli_alert_success cli_abort
+#' @importFrom httr2 request req_url_query req_error req_perform resp_status
 spk_geoserv_dlv <- function(
   url_geoserver = "https://maps.skeenasalmon.info/geoserver/ows",
   dir_out = NULL,
@@ -82,15 +82,21 @@ spk_geoserv_dlv <- function(
         bbox <- sf::st_bbox(sf::st_transform(sf::st_as_sfc(bbox), target_crs))
       }
     }
-  bbox_str <- paste(c(bbox, paste0("EPSG:", crs)), collapse = ",")
+    bbox_str <- paste(c(bbox, paste0("EPSG:", crs)), collapse = ",")
     query_params$bbox <- bbox_str
   }
 
   # Send request and save response to a GeoJSON file
   file_out <- fs::path(dir_out, layer_name_out, ext = "geojson")
-  response <- httr::GET(url = url_geoserver, query = query_params, httr::write_disk(file_out, overwrite = TRUE))
 
-  if (httr::status_code(response) == 200) {
+  response <- httr2::request(url_geoserver) |>
+    httr2::req_url_query(!!!query_params) |>
+    httr2::req_error(is_error = \(resp) FALSE) |>
+    httr2::req_perform(path = file_out)
+
+  status <- httr2::resp_status(response)
+
+  if (status == 200) {
     if (format_out == "json") {
       text <- readLines(file_out, n = 10, warn = FALSE)
       if (any(grepl('"features"\\s*:\\s*\\[\\s*\\]', text))) {
@@ -102,9 +108,9 @@ spk_geoserv_dlv <- function(
         }
       }
     }
-    cat("GeoJSON saved to:", fs::path_abs(file_out), "\n")
+    cli::cli_alert_success("GeoJSON saved to: {.file {fs::path_abs(file_out)}}")
   } else {
-    cat("Error: Failed to download layer. HTTP Status:", httr::status_code(response), "\n")
+    cli::cli_abort("Failed to download layer. HTTP Status: {status}")
   }
 
   invisible(file_out)
