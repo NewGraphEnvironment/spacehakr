@@ -34,6 +34,7 @@
 #' @importFrom dplyr filter select all_of group_by summarise across
 #' @importFrom chk chk_s3_class chk_string chk_flag
 #' @importFrom cli cli_warn
+#' @importFrom rlang .data
 #' @export
 spk_join <- function(
   target_tbl,
@@ -85,7 +86,9 @@ spk_join <- function(
   )
 
   if (!identical(target_col_return, "*")) {
-    result <- dplyr::select(result, dplyr::all_of(c(target_col_return, mask_col_return)))
+    # Preserve geometry column explicitly (sf objects have a special geometry column)
+    geom_col <- attr(result, "sf_column")
+    result <- dplyr::select(result, dplyr::all_of(c(target_col_return, mask_col_return)), dplyr::all_of(geom_col))
   }
 
   if (collapse && nrow(result) > nrow(target_tbl)) {

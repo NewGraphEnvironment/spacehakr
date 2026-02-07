@@ -97,6 +97,7 @@ spk_gdalwarp <- function(path_in,
   args <- c(
     if (overwrite) "-overwrite",
     params_default,
+    if (!is.null(params_add)) params_add,  # Add before file paths
     if (!is.null(s_srs)) c("-s_srs", s_srs),
     c("-t_srs", t_srs),
     c("-r", resampling),
@@ -104,11 +105,6 @@ spk_gdalwarp <- function(path_in,
     path_in,
     path_out
   )
-
-  # Add additional parameters if provided
-  if (!is.null(params_add)) {
-    args <- c(args, params_add)
-  }
 
   # Return the full command as a string if interactive
   if (interactive) {
