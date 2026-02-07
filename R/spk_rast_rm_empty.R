@@ -12,6 +12,21 @@
 #'
 #' @seealso [spk_rast_not_empty()], [fs::dir_ls()], [fs::file_delete()], [terra::rast()], [terra::values()]
 #'
+#' @examples
+#' \dontrun{
+#' # Check for empty rasters without deleting
+#' empty_files <- spk_rast_rm_empty("data/rasters", delete = FALSE)
+#'
+#' # Remove empty rasters from a directory
+#' spk_rast_rm_empty("data/rasters", delete = TRUE)
+#'
+#' # Remove empty VRT files specifically
+#' spk_rast_rm_empty("data/rasters", regexp = "\\.vrt$")
+#'
+#' # Remove empty rasters quietly (no messages)
+#' spk_rast_rm_empty("data/rasters", quiet = TRUE)
+#' }
+#'
 #' @importFrom chk chk_string chk_flag chk_dir chk_not_null
 #' @importFrom fs dir_ls file_delete
 #' @importFrom purrr keep

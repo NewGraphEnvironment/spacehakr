@@ -6,6 +6,22 @@
 #'
 #' @return [logical] `TRUE` if the raster has any non-zero values, otherwise `FALSE`.
 #'
+#' @examples
+#' \dontrun{
+#' # Check if a raster has non-zero data
+#' has_data <- spk_rast_not_empty("path/to/raster.tif")
+#'
+#' if (has_data) {
+#'   print("Raster contains non-zero values")
+#' } else {
+#'   print("Raster is empty (all zeros)")
+#' }
+#'
+#' # Use with filtering
+#' raster_files <- list.files("data/rasters", pattern = "\\.tif$", full.names = TRUE)
+#' non_empty_files <- Filter(spk_rast_not_empty, raster_files)
+#' }
+#'
 #' @importFrom terra rast values
 #' @importFrom chk chk_file
 #' @export

@@ -21,6 +21,56 @@
 #'
 #' @family vector
 #'
+#' @examples
+#' # Create sample target and mask data
+#' target <- sf::st_sf(
+#'   id = 1:3,
+#'   geometry = sf::st_sfc(
+#'     sf::st_point(c(0, 0)),
+#'     sf::st_point(c(5, 5)),
+#'     sf::st_point(c(10, 10))
+#'   ),
+#'   crs = 4326
+#' )
+#'
+#' mask <- sf::st_sf(
+#'   region = c("A", "B"),
+#'   type = c("urban", "rural"),
+#'   geometry = sf::st_sfc(
+#'     sf::st_polygon(list(rbind(c(-1, -1), c(6, -1), c(6, 6), c(-1, 6), c(-1, -1)))),
+#'     sf::st_polygon(list(rbind(c(4, 4), c(12, 4), c(12, 12), c(4, 12), c(4, 4))))
+#'   ),
+#'   crs = 4326
+#' )
+#'
+#' # Basic spatial join
+#' result <- spk_join(
+#'   target_tbl = target,
+#'   mask_tbl = mask,
+#'   target_col_return = c("id", "geometry"),
+#'   mask_col_return = c("region", "type")
+#' )
+#'
+#' # Join with filtering
+#' result_filtered <- spk_join(
+#'   target_tbl = target,
+#'   mask_tbl = mask,
+#'   target_col_return = c("id", "geometry"),
+#'   mask_col_return = c("region"),
+#'   mask_col_filter = "type",
+#'   mask_col_filter_values = "urban"
+#' )
+#'
+#' # Join with collapse when multiple matches occur
+#' result_collapsed <- spk_join(
+#'   target_tbl = target,
+#'   mask_tbl = mask,
+#'   target_col_return = c("id", "geometry"),
+#'   mask_col_return = c("region"),
+#'   collapse = TRUE,
+#'   target_col_collapse = "id"
+#' )
+#'
 #' @importFrom sf st_join st_read
 #' @importFrom dplyr filter select all_of group_by summarise across
 #' @importFrom chk chk_s3_class chk_string chk_flag
