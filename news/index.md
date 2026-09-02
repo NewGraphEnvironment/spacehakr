@@ -1,6 +1,6 @@
 # Changelog
 
-## spacehakr 0.1.0.9000 (development)
+## spacehakr 0.2.0
 
 - Add \[spk_source_url()\] and \[spk_source_bcdata()\], which fetch
   layers into a GeoPackage from an arbitrary URL and from the BC Data

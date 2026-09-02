@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">spacehakr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0.9000" id="spacehakr-0109000-development">spacehakr 0.1.0.9000 (development)<a class="anchor" aria-label="anchor" href="#spacehakr-0109000-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="spacehakr-020">spacehakr 0.2.0<a class="anchor" aria-label="anchor" href="#spacehakr-020"></a></h2>
 <ul><li>
 <p>Add [spk_source_url()] and [spk_source_bcdata()], which fetch layers into a GeoPackage from an arbitrary URL and from the BC Data Catalogue respectively. Sourcing data from public endpoints is what a reader needs to regenerate a report’s inputs, so these belong in a public package.</p>
 <p>[spk_source_url()] reads through GDAL’s <code>/vsicurl/</code> virtual filesystem and takes an optional SQL <code>query</code> applied as <code>-where</code>. It subsumes a separate CSV-only fetcher that was byte-equivalent to it with the filter omitted, so there is one entry point rather than two.</p>
