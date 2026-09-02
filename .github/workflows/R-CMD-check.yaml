@@ -47,4 +47,8 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
-          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+          # --no-build-vignettes: the STAC vignettes arriving from ngr query the
+          # live Planetary Computer API and pull rasters over /vsicurl/. Building
+          # them on all five runners would make every push depend on a
+          # third-party service. pkgdown still builds them, on one runner.
+          build_args: 'c("--no-manual","--no-build-vignettes")'
