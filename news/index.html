@@ -38,8 +38,13 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9000" id="spacehakr-0109000-development">spacehakr 0.1.0.9000 (development)<a class="anchor" aria-label="anchor" href="#spacehakr-0109000-development"></a></h2>
-<ul><li>Adopt the two STAC articles from <code>ngr</code>. Both demonstrate <code><a href="../reference/spk_stac_calc.html">spk_stac_calc()</a></code>, so they follow the function here rather than documenting a deprecated shim on ngr’s site. They live in <code>vignettes/articles/</code> — pkgdown builds them, <code>R CMD build</code> ignores them. As true vignettes they would have to build on all five check runners against the live Planetary Computer API.</li>
-<li>Exclude <code>.git</code> from the build. In a <code>git worktree</code> checkout <code>.git</code> is a <em>file</em> holding an absolute developer path, and <code>R CMD build</code> ships it (it is only excluded when it is a directory).</li>
+<ul><li>
+<p>Add [spk_source_url()] and [spk_source_bcdata()], which fetch layers into a GeoPackage from an arbitrary URL and from the BC Data Catalogue respectively. Sourcing data from public endpoints is what a reader needs to regenerate a report’s inputs, so these belong in a public package.</p>
+<p>[spk_source_url()] reads through GDAL’s <code>/vsicurl/</code> virtual filesystem and takes an optional SQL <code>query</code> applied as <code>-where</code>. It subsumes a separate CSV-only fetcher that was byte-equivalent to it with the filter omitted, so there is one entry point rather than two.</p>
+<p><code>bcdata</code> joins <code>Imports</code> for [spk_source_bcdata()].</p>
+</li>
+<li><p>Adopt the two STAC articles from <code>ngr</code>. Both demonstrate <code><a href="../reference/spk_stac_calc.html">spk_stac_calc()</a></code>, so they follow the function here rather than documenting a deprecated shim on ngr’s site. They live in <code>vignettes/articles/</code> — pkgdown builds them, <code>R CMD build</code> ignores them. As true vignettes they would have to build on all five check runners against the live Planetary Computer API.</p></li>
+<li><p>Exclude <code>.git</code> from the build. In a <code>git worktree</code> checkout <code>.git</code> is a <em>file</em> holding an absolute developer path, and <code>R CMD build</code> ships it (it is only excluded when it is a directory).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="spacehakr-010">spacehakr 0.1.0<a class="anchor" aria-label="anchor" href="#spacehakr-010"></a></h2>

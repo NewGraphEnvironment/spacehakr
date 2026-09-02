@@ -2253,11 +2253,12 @@ clears `> 100` as comfortably as 218 does, so it discriminates nothing.
 - **The failure is invisible for as long as your fixtures share one
   class.** In fly#35 four columns recording how each airphoto footprint
   had been sized never reached a single caller of the package’s own
-  documented data source, because `bcdata::collect()` returns a tibble
-  and every fixture in the package read back as plain `sf, data.frame`.
-  Two releases shipped that way with a green suite: geometry and every
-  downstream number stayed correct, and only the audit trail went
-  missing, so nothing errored and nothing looked wrong.
+  documented data source, because
+  [`bcdata::collect()`](https://dplyr.tidyverse.org/reference/compute.html)
+  returns a tibble and every fixture in the package read back as plain
+  `sf, data.frame`. Two releases shipped that way with a green suite:
+  geometry and every downstream number stayed correct, and only the
+  audit trail went missing, so nothing errored and nothing looked wrong.
 
 - **Fix: build the frame first, then hand the constructor one
   argument.** The columns are then inside the argument the branch keeps,
@@ -2901,12 +2902,13 @@ scavenger hunt.
 
 ### CSV whitespace: `trim_ws` and `strip.white` do not do what the name suggests
 
-- `readr::read_csv()` defaults to **`trim_ws = TRUE`** and silently
-  strips leading and trailing whitespace. Where whitespace is
-  *meaningful* — a QGIS layer name deliberately prefixed with a space so
-  it sorts first — a trimmed value binds to nothing, with no error. Use
-  base [`utils::read.csv()`](https://rdrr.io/r/utils/read.table.html),
-  or pass `trim_ws = FALSE`.
+- [`readr::read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
+  defaults to **`trim_ws = TRUE`** and silently strips leading and
+  trailing whitespace. Where whitespace is *meaningful* — a QGIS layer
+  name deliberately prefixed with a space so it sorts first — a trimmed
+  value binds to nothing, with no error. Use base
+  [`utils::read.csv()`](https://rdrr.io/r/utils/read.table.html), or
+  pass `trim_ws = FALSE`.
 - `read.csv(strip.white = TRUE)` applies **only to unquoted fields**,
   and [`write.csv()`](https://rdrr.io/r/utils/write.table.html) quotes
   every character column. So a round-trip guard that compares

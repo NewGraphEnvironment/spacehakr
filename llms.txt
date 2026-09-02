@@ -208,6 +208,11 @@ MIT
   : Remove Empty Raster Files
 - [`spk_res()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_res.md)
   : Extract Resolution from a Raster
+- [`spk_source_bcdata()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_source_bcdata.md)
+  : Download a BC Data Catalogue Layer to a GeoPackage
+- [`spk_source_url()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_source_url.md)
+  : Download and Convert Files to GeoPackage Layers with Optional
+  Filtering
 - [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md)
   : Retrieve and optionally calculate spectral indices from a STAC item
 

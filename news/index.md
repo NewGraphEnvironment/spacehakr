@@ -2,6 +2,19 @@
 
 ## spacehakr 0.1.0.9000 (development)
 
+- Add \[spk_source_url()\] and \[spk_source_bcdata()\], which fetch
+  layers into a GeoPackage from an arbitrary URL and from the BC Data
+  Catalogue respectively. Sourcing data from public endpoints is what a
+  reader needs to regenerate a report’s inputs, so these belong in a
+  public package.
+
+  \[spk_source_url()\] reads through GDAL’s `/vsicurl/` virtual
+  filesystem and takes an optional SQL `query` applied as `-where`. It
+  subsumes a separate CSV-only fetcher that was byte-equivalent to it
+  with the filter omitted, so there is one entry point rather than two.
+
+  `bcdata` joins `Imports` for \[spk_source_bcdata()\].
+
 - Adopt the two STAC articles from `ngr`. Both demonstrate
   [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md),
   so they follow the function here rather than documenting a deprecated
@@ -9,6 +22,7 @@
   builds them, `R CMD build` ignores them. As true vignettes they would
   have to build on all five check runners against the live Planetary
   Computer API.
+
 - Exclude `.git` from the build. In a `git worktree` checkout `.git` is
   a *file* holding an absolute developer path, and `R CMD build` ships
   it (it is only excluded when it is a directory).
