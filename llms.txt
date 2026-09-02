@@ -7,6 +7,7 @@ queries.
 ## Installation
 
 ``` r
+
 # install.packages("pak")
 pak::pkg_install("NewGraphEnvironment/spacehakr")
 ```
@@ -14,6 +15,7 @@ pak::pkg_install("NewGraphEnvironment/spacehakr")
 ## Examples
 
 ``` r
+
 library(spacehakr)
 library(sf)
 #> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
@@ -26,6 +28,7 @@ library(terra)
 Query layer names and geometry types from any vector data source:
 
 ``` r
+
 # Get path to bundled test data
 gpkg_path <- system.file("extdata", "poly.gpkg", package = "spacehakr")
 
@@ -41,6 +44,7 @@ spk_layer_info(gpkg_path)
 Calculate the union bounding box across multiple raster files:
 
 ``` r
+
 # Get paths to bundled test rasters
 rast_files <- c(
   system.file("extdata", "test1.tif", package = "spacehakr"),
@@ -59,6 +63,7 @@ bbox
 Join points to polygons with optional column selection and filtering:
 
 ``` r
+
 # Load bundled test data
 points <- st_read(
   system.file("extdata", "points.gpkg", package = "spacehakr"), 
@@ -98,6 +103,7 @@ result
 Generate GDAL command strings for raster reprojection:
 
 ``` r
+
 # Build a gdalwarp command (interactive = TRUE returns full command string)
 input_file <- system.file("extdata", "test1.tif", package = "spacehakr")
 
@@ -119,6 +125,7 @@ cat(cmd)
 Fetch vector data from BC’s GeoServer (requires network access):
 
 ``` r
+
 # Download contour lines within a bounding box
 contours <- spk_geoserv_dlv(
   url_geoserver = "https://openmaps.gov.bc.ca/geo/pub/ows",
@@ -135,6 +142,7 @@ Calculate spectral indices from STAC items (requires `rstac` and network
 access):
 
 ``` r
+
 library(rstac)
 
 # Query Landsat data
@@ -158,17 +166,17 @@ ndvi <- spk_stac_calc(
 
 ## Function Reference
 
-| Function                                                                                             | Description                                      |
-|------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| [`spk_layer_info()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_layer_info.md)       | List layers and geometry types in vector sources |
-| [`spk_rast_ext()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_ext.md)           | Compute combined extent from multiple rasters    |
-| [`spk_join()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_join.md)                   | Spatial join with filtering and column selection |
-| [`spk_gdalwarp()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_gdalwarp.md)           | Build GDAL warp commands                         |
-| [`spk_geoserv_dlv()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_geoserv_dlv.md)     | Download from GeoServer WFS                      |
-| [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md)         | Calculate indices from STAC items                |
-| [`spk_odm()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_odm.md)                     | Build OpenDroneMap commands                      |
-| [`spk_res()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_res.md)                     | Query raster resolution                          |
-| [`spk_rast_rm_empty()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_rm_empty.md) | Remove empty rasters from file lists             |
+| Function | Description |
+|----|----|
+| [`spk_layer_info()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_layer_info.md) | List layers and geometry types in vector sources |
+| [`spk_rast_ext()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_ext.md) | Compute combined extent from multiple rasters |
+| [`spk_join()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_join.md) | Spatial join with filtering and column selection |
+| [`spk_gdalwarp()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_gdalwarp.md) | Build GDAL warp commands |
+| [`spk_geoserv_dlv()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_geoserv_dlv.md) | Download from GeoServer WFS |
+| [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md) | Calculate indices from STAC items |
+| [`spk_odm()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_odm.md) | Build OpenDroneMap commands |
+| [`spk_res()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_res.md) | Query raster resolution |
+| [`spk_rast_rm_empty()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_rast_rm_empty.md) | Remove empty rasters from file lists |
 
 ## License
 
