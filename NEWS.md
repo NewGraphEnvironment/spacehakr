@@ -1,3 +1,9 @@
+# spacehakr 0.1.0.9000 (development)
+
+- Adopt the two STAC vignettes from `ngr`. Both demonstrate `spk_stac_calc()`, so
+  they follow the function here rather than documenting a deprecated shim on ngr's site.
+- Exclude `.git` from the build. In a `git worktree` checkout `.git` is a *file* holding an absolute developer path, and `R CMD build` ships it (it is only excluded when it is a directory).
+
 # spacehakr 0.1.0
 
 First tagged release. Twelve spatial functions extracted from `ngr`'s `ngr_spk_*`
