@@ -8,3 +8,6 @@
 ^dev$
 ^data-raw$
 ^README\.Rmd$
+^\.git$
+^planning$
+^vignettes/articles$
