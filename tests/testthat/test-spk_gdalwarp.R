@@ -30,18 +30,20 @@ testthat::test_that("spk_gdalwarp constructs correct arguments", {
 })
 
 
-# run the cmd
-processx::run(
-  command = "gdalwarp",
-  args = args,
-  echo = TRUE,
-  spinner = TRUE
-)
+# Actually running gdalwarp needs the GDAL CLI, which the GitHub runners do not
+# carry. Guard and scope it, rather than shelling out at file top level where a
+# missing binary errors the whole file before any test runs.
+test_that("spk_gdalwarp args drive a real gdalwarp run", {
+  skip_if_not_installed("processx")
+  skip_if(!nzchar(Sys.which("gdalwarp")), "gdalwarp CLI not on PATH")
+  on.exit(try(fs::file_delete(file_out), silent = TRUE), add = TRUE)
 
-# test that the output file exists
-test_that("output file exists", {
+  processx::run(
+    command = "gdalwarp",
+    args = args,
+    echo = TRUE,
+    spinner = TRUE
+  )
+
   expect_true(fs::file_exists(file_out))
 })
-
-# clean up
-fs::file_delete(file_out)

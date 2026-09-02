@@ -15,3 +15,7 @@ deprecates its own copies of these functions
   went unnoticed because the package had no `R-CMD-check` workflow.
 - Add an `R-CMD-check` workflow, so the twelve test files run on every push
   rather than never.
+- Guard the `gdalwarp` run in `test-spk_gdalwarp.R`. It shelled out to the GDAL
+  CLI at file top level with no guard, which errors the whole file on any
+  machine without it — including every GitHub runner. Now scoped to a
+  `test_that()` block that skips when `gdalwarp` is not on `PATH`.
