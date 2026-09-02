@@ -1,10 +1,6 @@
 ---
-title: "STAC spectral indices with spk_stac_calc"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{STAC spectral indices with spk_stac_calc}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "STAC ortho timelapse"
+output: rmarkdown::html_document
 ---
 
 ```{r, include = FALSE}
@@ -87,25 +83,26 @@ see the [gdalcubes](https://github.com/appelmar/gdalcubes) package.
 Define an area of interest and query the Planetary Computer STAC catalog for
 Landsat Collection 2 Level-2 imagery with low cloud cover.
 
-```{r rstac-query-2000}
-# Define an AOI from a bounding box (WGS84)
+```{r rstac-query-2016}
+# Define an AOI from a bounding box (WGS84) - Maxxam floodplain near bulkley lake
 bbox <- c(
-  xmin = -126.55350240037997,
-  ymin =  54.4430453753869,
-  xmax = -126.52422763064457,
-  ymax =  54.46001902038006
+  xmin = -126.17545256019142,
+  ymin =  54.36161045287439,
+  xmax = -126.12615394008702,
+  ymax =  54.38908432381547
 )
+
 
 aoi <- sf::st_as_sfc(sf::st_bbox(bbox, crs = 4326)) |>
   sf::st_as_sf()
 
 stac_url <- "https://planetarycomputer.microsoft.com/api/stac/v1"
-y <- 2000
+y <- 2016
 date_time <- paste0(y, "-05-01/", y, "-09-15")
 
 stac_query <- rstac::stac(stac_url) |>
   rstac::stac_search(
-    collections = "landsat-c2-l2",
+    collections = "sentinel-2-l2a",
     datetime = date_time,
     intersects = sf::st_geometry(aoi)[[1]],
     limit = 200
@@ -119,122 +116,122 @@ items <- stac_query |>
 
 ```
 
-Compute NDVI for each returned scene using `spk_stac_calc()`, which reads the
-red and NIR bands via GDAL's VSI interface and calculates `(NIR - red) / (NIR + red)`.
+Clip "visual" item to the bbox aoi
 
-```{r calc-ndvi-2000}
-ndvi_list <- items$features |>
-  purrr::map(spk_stac_calc, aoi = aoi, timing = TRUE) |>
-  purrr::set_names(purrr::map_chr(items$features, "id"))
+```{r clip-2016}
+# items$features is a list of items, but the function expects a single item so we either
+# Use purrr::map() to process each feature or access a single feature directly
+r <- items$features[[1]] |> 
+  spk_stac_calc(asset_a = "visual", asset_b = NULL, calc = NULL, aoi = aoi)
+
 ```
 
 Create a mapview object for each NDVI raster with a red-yellow-green color scale.
 
-```{r mapview-2000}
-mv <- purrr::imap(
-  ndvi_list,
-  function(x, nm) {
-    rng <- terra::minmax(x)
-    at <- seq(
-      floor(rng[1] * 10) / 10,
-      ceiling(rng[2] * 10) / 10,
-      by = 0.1
-    )
-    
-    mapview::mapview(
-      x,
-      layer.name = nm,
-      at = at,
-      col.regions = grDevices::hcl.colors(length(at) - 1L, "RdYlGn")
-    )
-  }
-)
+```{r mapview1}
+leaflet::leaflet() |>
+  leaflet::addTiles() |>
+  leafem::addRasterRGB(r, quantiles = c(0.02, 0.98))
 
+# static view
+# terra::plotRGB(r, stretch = "lin")
+
+```
+
+## Native Resolution RGB
+
+The "visual" asset is a pre-rendered RGB that may be compressed. For higher
+resolution, we can build an RGB composite from the native 10m bands (B04=Red,
+B03=Green, B02=Blue).
+
+```{r rgb-native}
+r_rgb <- items$features[[1]] |>
+  spk_stac_calc(
+    asset_a = "B04",
+    asset_b = "B03",
+    asset_c = "B02",
+    calc = "rgb",
+    aoi = aoi
+  )
+```
+
+Compare the pre-rendered "visual" asset (left) with native 10m bands (right):
+
+```{r rgb-plot, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+terra::plotRGB(r, stretch = "lin", main = "Visual Asset")
+terra::plotRGB(r_rgb, stretch = "lin", main = "Native 10m RGB")
 
 ```
 
 
-Combine all layers into a single interactive map. Use the layer control (top-left)
-to toggle individual scenes on/off.
+They look basically identical and when we check the resolution we can see that they are equal...
 
-```{r map1, out.width="100%"}
-purrr::reduce(mv, `+`)
+```{r res-compare}
+# compare the resolution
+terra::res(r)
+terra::res(r_rgb)
 ```
 
 ## Multi-Year Comparison
 
-Query multiple years and select the best scene per year based on vegetation coverage
-(highest proportion of pixels with NDVI >= 0.4). This helps identify scenes with
-peak growing-season conditions.
+Query multiple years and retrieve the latest available ortho (visual asset) from
+peak growing-season for each year.
 
 ```{r multi-year, eval=T}
-years <- seq(2000, 2025, by = 5)
+years <- seq(2016, 2025, by = 1)
 
-ndvi_by_year <- purrr::set_names(years) |>
+orthos_by_year <- years |>
   purrr::map(function(y) {
-    date_time <- paste0(y, "-06-01/", y, "-07-15")
-    
+    date_time <- paste0(y, "-06-01/", y, "-07-31")
+
     items <- rstac::stac(stac_url) |>
       rstac::stac_search(
-        collections = "landsat-c2-l2",
+        collections = "sentinel-2-l2a",
         datetime = date_time,
         intersects = sf::st_geometry(aoi)[[1]],
-        limit = 200
+        limit = 10
       ) |>
-      rstac::ext_filter(`eo:cloud_cover` <= 50) |>
+      rstac::ext_filter(`eo:cloud_cover` <= 20) |>
       rstac::post_request() |>
       rstac::items_fetch() |>
       rstac::items_sign_planetary_computer()
-    
-    items$features |>
-      purrr::map(spk_stac_calc, aoi = aoi, timing = TRUE) |>
-      purrr::set_names(purrr::map_chr(items$features, "id"))
-  })
 
-ndvi_best_by_year <- ndvi_by_year |>
-  purrr::map(function(ndvi_list) {
-    
-    # Compute the proportion of pixels with NDVI >= 0.4 for each raster
-    prop_high <- sapply(
-      ndvi_list,
-      \(r) terra::global(r >= 0.4, mean, na.rm = TRUE)[[1]]
-    )
-    
-    ndvi_list[which.max(prop_high)]
-  }) |> 
-  purrr::keep(~ length(.x) > 0)
+    # Return NULL if no features found for this year
+    if (length(items$features) == 0) return(NULL)
 
-ndvi_flat <- purrr::imap(ndvi_best_by_year, \(lst, yr) {
-  purrr::set_names(lst, paste0(yr, "__", names(lst)))
-}) |>
-  purrr::flatten()
+    # Sort by datetime descending to get the latest scene
+    datetimes <- purrr::map_chr(items$features, ~ .x$properties$datetime)
+    latest_idx <- which.max(as.POSIXct(datetimes))
 
-mv <- purrr::imap(
-  ndvi_flat,
-  function(x, nm) {
-    rng <- terra::minmax(x)
-    at <- seq(
-      floor(rng[1] * 10) / 10,
-      ceiling(rng[2] * 10) / 10,
-      by = 0.1
-    )
-    
-    mapview::mapview(
-      x,
-      layer.name = nm,
-      at = at,
-      col.regions = grDevices::hcl.colors(length(at) - 1L, "RdYlGn")
-    )
-  }
-)
+    # Extract the acquisition date for the layer name
+    acq_date <- as.Date(datetimes[latest_idx])
 
+    # Get the latest feature's visual asset clipped to AOI
+    ortho <- items$features[[latest_idx]] |>
+      spk_stac_calc(asset_a = "visual", asset_b = NULL, calc = NULL, aoi = aoi)
 
+    list(date = acq_date, raster = ortho)
+  }) |>
+  purrr::compact() |>  # Remove NULLs (years with no data)
+  (\(x) purrr::set_names(x, purrr::map_chr(x, ~ as.character(.x$date))))()
 ```
 
-Display the multi-year comparison. All year layers are visible by default; use the
-layer control to toggle individual years on/off for comparison.
+Display the multi-year comparison as toggleable layers on a leaflet map.
 
-```{r map2, out.width="100%", eval = T}
-purrr::reduce(mv, `+`)
+```{r map2, out.width="100%", eval=T}
+map <- leaflet::leaflet() |>
+  leaflet::addTiles()
+
+for (dt in names(orthos_by_year)) {
+  map <- map |>
+    leafem::addRasterRGB(orthos_by_year[[dt]]$raster, group = dt, quantiles = c(0.02, 0.98))
+}
+
+map |>
+  leaflet::addLayersControl(
+    baseGroups = names(orthos_by_year),
+    options = leaflet::layersControlOptions(collapsed = FALSE)
+  )
 ```
 
