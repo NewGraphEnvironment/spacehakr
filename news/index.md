@@ -1,5 +1,18 @@
 # Changelog
 
+## spacehakr 0.1.0.9000 (development)
+
+- Adopt the two STAC articles from `ngr`. Both demonstrate
+  [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md),
+  so they follow the function here rather than documenting a deprecated
+  shim on ngr’s site. They live in `vignettes/articles/` — pkgdown
+  builds them, `R CMD build` ignores them. As true vignettes they would
+  have to build on all five check runners against the live Planetary
+  Computer API.
+- Exclude `.git` from the build. In a `git worktree` checkout `.git` is
+  a *file* holding an absolute developer path, and `R CMD build` ships
+  it (it is only excluded when it is a directory).
+
 ## spacehakr 0.1.0
 
 First tagged release. Twelve spatial functions extracted from `ngr`’s

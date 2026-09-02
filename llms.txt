@@ -211,3 +211,11 @@ MIT
 - [`spk_stac_calc()`](http://www.newgraphenvironment.com/spacehakr/reference/spk_stac_calc.md)
   : Retrieve and optionally calculate spectral indices from a STAC item
 
+# Articles
+
+### All vignettes
+
+- [STAC ortho
+  timelapse](http://www.newgraphenvironment.com/spacehakr/articles/stac-sentinel2-ortho-timelapse.md):
+- [STAC spectral indices with
+  spk_stac_calc](http://www.newgraphenvironment.com/spacehakr/articles/stac-spectral-indices.md):
