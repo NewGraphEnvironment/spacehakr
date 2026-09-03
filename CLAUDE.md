@@ -47,8 +47,10 @@ devtools::install()
 
 All exported functions use prefix `spk_`:
 - `spk_rast_*` - Raster operations
-- `spk_gdalwarp()`, `spk_odm()` - External tool command builders
-- `spk_geoserv_*`, `spk_stac_*` - Remote data access
+- `spk_gdalwarp()`, `spk_odm()` - External tool command builders (they return argument
+  vectors; they do not execute)
+- `spk_geoserv_*`, `spk_stac_*`, `spk_source_*` - Remote data access. `spk_source_*`
+  fetchers *do* execute — `spk_source_url()` shells out to `ogr2ogr`
 - `spk_join()`, `spk_poly_to_points()`, `spk_layer_info()` - Vector/spatial operations
 
 ## Architecture
@@ -79,7 +81,10 @@ Vignette-only packages go in Suggests (e.g., rstac, leaflet, mapview).
 ## Documentation Style
 
 - Roxygen2 with markdown enabled (`Roxygen: list(markdown = TRUE)`)
-- `@family spacehakr` tag on all exported functions
+- `@family` on every exported function, **topical not universal** — the tags in use are
+  `raster`, `vector`, `download`, `command-builder`, `stac`, `qgis`, `geoserver`. An
+  earlier version of this file claimed a single `@family spacehakr`; the code has never
+  done that.
 - `@importFrom` for all external functions (explicit, never `@import`)
 - `@examples` with `\dontrun{}` for slow/network examples
 - `@seealso` for related functions
@@ -153,6 +158,28 @@ Generate with `data-raw/make_hexsticker.R` using the hexSticker package. Black b
 - **Use backticks for function names in issue titles**: `` gh issue create --title "Add \`spk_join()\`" ``
 - **No `gh milestone` command** - use `gh api` for milestones
 - **`--milestone` flag needs title, not number**
+
+## Working Conventions
+
+### Pin this package in every consumer, or in none
+
+`Remotes:` entries for this package are currently **unpinned** in both `ngr` and `rfp`.
+That is deliberate. If a version pin is ever wanted again, add it to *every* consumer in
+the same change.
+
+**Why:** `Remotes:` pins are declared per-repo but resolved globally. When one consumer
+pins `@v0.2.0` while another pins `@v0.1.0`, `pak` is asked for one package at two tags
+and refuses with `dependency conflict` — a message naming neither the package nor the
+tags. Nothing in the failing repo's own `DESCRIPTION` looks wrong. The original pin was
+added when this package had no releases, no CI, and a live `R CMD check` ERROR; it now
+runs a five-runner check matrix, so its own CI is the protection the pin used to provide.
+
+**How to apply:** pin everywhere or nowhere — mixing is the only option that fails
+outright. Unpinned, accept that a break on this package's default branch can turn a
+consumer's CI red on an unrelated PR. Tags still exist (`v0.1.0`, `v0.2.0`, `v0.3.0`) for
+anyone wanting a reproducible install.
+
+(Source: machine-local memory `spacehakr-remotes-unpinned.md`, 2026-09-02)
 
 <!-- BEGIN SOUL CONVENTIONS — DO NOT EDIT BELOW THIS LINE -->
 
