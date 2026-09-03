@@ -70,9 +70,15 @@ cannot be fixed with \code{open_options}. Pass \code{encoding} instead and the f
 and re-encoded before \code{ogr2ogr} sees it, rather than streamed through \verb{/vsicurl/}.
 
 Canadian federal open data often ships bilingual, slash-separated column headers —
-\code{Site/Site}, \code{Year/Année}. Both the slash and the accent survive into the GeoPackage
-layer as-is; neither is sanitised here. Check the resulting field names rather than
-assuming them, because a slash in particular is awkward to reference downstream.
+\code{Site/Site}, \code{Year/Année}. Verified against GDAL 3.x: both the slash and the accent
+survive into the GeoPackage exactly, so \code{ogrinfo} reports the fields as \code{Site/Site}
+and \code{Year/Année}.
+
+They do not survive the trip back into R unchanged, though. \code{\link[sf:st_read]{sf::st_read()}} returns a
+data frame, and R makes column names syntactic — the slash becomes a dot
+(\code{Site.Site}) while the accent is kept (\code{Year.Année}). So the name in the file and the
+name in your session differ, and a downstream SQL \code{query} against this layer must use
+the \emph{file's} name, quoted.
 }
 \examples{
 \dontrun{

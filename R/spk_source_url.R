@@ -28,9 +28,15 @@
 #' and re-encoded before `ogr2ogr` sees it, rather than streamed through `/vsicurl/`.
 #'
 #' Canadian federal open data often ships bilingual, slash-separated column headers —
-#' `Site/Site`, `Year/Année`. Both the slash and the accent survive into the GeoPackage
-#' layer as-is; neither is sanitised here. Check the resulting field names rather than
-#' assuming them, because a slash in particular is awkward to reference downstream.
+#' `Site/Site`, `Year/Année`. Verified against GDAL 3.x: both the slash and the accent
+#' survive into the GeoPackage exactly, so `ogrinfo` reports the fields as `Site/Site`
+#' and `Year/Année`.
+#'
+#' They do not survive the trip back into R unchanged, though. [sf::st_read()] returns a
+#' data frame, and R makes column names syntactic — the slash becomes a dot
+#' (`Site.Site`) while the accent is kept (`Year.Année`). So the name in the file and the
+#' name in your session differ, and a downstream SQL `query` against this layer must use
+#' the *file's* name, quoted.
 #'
 #' @param path_gpkg [character] Path to the output GeoPackage. Created if it does not
 #'   exist; its parent directory must exist.
