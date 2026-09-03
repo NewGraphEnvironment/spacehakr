@@ -1,6 +1,6 @@
 # Changelog
 
-## spacehakr 0.2.0.9000 (development)
+## spacehakr 0.3.0
 
 - \[spk_source_url()\] now fails loudly. The `ogr2ogr` exit status was
   never checked, so a bad URL, a 404 or an unreadable source returned

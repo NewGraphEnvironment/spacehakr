@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">spacehakr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0.9000" id="spacehakr-0209000-development">spacehakr 0.2.0.9000 (development)<a class="anchor" aria-label="anchor" href="#spacehakr-0209000-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="spacehakr-030">spacehakr 0.3.0<a class="anchor" aria-label="anchor" href="#spacehakr-030"></a></h2>
 <ul><li><p>[spk_source_url()] now fails loudly. The <code>ogr2ogr</code> exit status was never checked, so a bad URL, a 404 or an unreadable source returned exactly what success returned, and a layer that was never written looked identical to one that was. <code>stderr</code> now goes to a file rather than being merged into a discarded value, and a non-zero status aborts naming the URL and the tail of the diagnostic.</p></li>
 <li><p>[spk_source_url()] gains <code>open_options</code>, <code>a_srs</code>, <code>t_srs</code>, <code>layer</code> and <code>encoding</code>. A non-spatial CSV carrying coordinate columns can now become a point layer (<code>-oo X_POSSIBLE_NAMES=</code>, <code>-a_srs</code>), a source that is not UTF-8 is fetched and re-encoded before conversion (GDAL’s CSV driver has no encoding open option), and the layer name no longer has to be whatever the URL’s file name happens to be.</p></li>
 <li><p>[spk_source_url()] creates the output GeoPackage when it does not exist, rather than requiring one to append to.</p></li>
