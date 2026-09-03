@@ -102,7 +102,7 @@
 </ul></div>
 <div class="section level2">
 <h2 id="function-naming">Function Naming<a class="anchor" aria-label="anchor" href="#function-naming"></a></h2>
-<p>All exported functions use prefix <code>spk_</code>: - <code>spk_rast_*</code> - Raster operations - <code><a href="reference/spk_gdalwarp.html">spk_gdalwarp()</a></code>, <code><a href="reference/spk_odm.html">spk_odm()</a></code> - External tool command builders - <code>spk_geoserv_*</code>, <code>spk_stac_*</code> - Remote data access - <code><a href="reference/spk_join.html">spk_join()</a></code>, <code><a href="reference/spk_poly_to_points.html">spk_poly_to_points()</a></code>, <code><a href="reference/spk_layer_info.html">spk_layer_info()</a></code> - Vector/spatial operations</p>
+<p>All exported functions use prefix <code>spk_</code>: - <code>spk_rast_*</code> - Raster operations - <code><a href="reference/spk_gdalwarp.html">spk_gdalwarp()</a></code>, <code><a href="reference/spk_odm.html">spk_odm()</a></code> - External tool command builders (they return argument vectors; they do not execute) - <code>spk_geoserv_*</code>, <code>spk_stac_*</code>, <code>spk_source_*</code> - Remote data access. <code>spk_source_*</code> fetchers <em>do</em> execute — <code><a href="reference/spk_source_url.html">spk_source_url()</a></code> shells out to <code>ogr2ogr</code> - <code><a href="reference/spk_join.html">spk_join()</a></code>, <code><a href="reference/spk_poly_to_points.html">spk_poly_to_points()</a></code>, <code><a href="reference/spk_layer_info.html">spk_layer_info()</a></code> - Vector/spatial operations</p>
 </div>
 <div class="section level2">
 <h2 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a></h2>
@@ -139,7 +139,7 @@ dev/                # Development scripts (not in package)</code></pre>
 <h2 id="documentation-style">Documentation Style<a class="anchor" aria-label="anchor" href="#documentation-style"></a></h2>
 <ul><li>Roxygen2 with markdown enabled (<code>Roxygen: list(markdown = TRUE)</code>)</li>
 <li>
-<code>@family spacehakr</code> tag on all exported functions</li>
+<code>@family</code> on every exported function, <strong>topical not universal</strong> — the tags in use are <code>raster</code>, <code>vector</code>, <code>download</code>, <code>command-builder</code>, <code>stac</code>, <code>qgis</code>, <code>geoserver</code>. An earlier version of this file claimed a single <code>@family spacehakr</code>; the code has never done that.</li>
 <li>
 <code>@importFrom</code> for all external functions (explicit, never <code>@import</code>)</li>
 <li>
@@ -210,7 +210,18 @@ dev/                # Development scripts (not in package)</code></pre>
 <li>
 <strong>No <code>gh milestone</code> command</strong> - use <code>gh api</code> for milestones</li>
 <li><strong><code>--milestone</code> flag needs title, not number</strong></li>
-</ul><!-- BEGIN SOUL CONVENTIONS — DO NOT EDIT BELOW THIS LINE --></div>
+</ul></div>
+<div class="section level2">
+<h2 id="working-conventions">Working Conventions<a class="anchor" aria-label="anchor" href="#working-conventions"></a></h2>
+<div class="section level3">
+<h3 id="pin-this-package-in-every-consumer-or-in-none">Pin this package in every consumer, or in none<a class="anchor" aria-label="anchor" href="#pin-this-package-in-every-consumer-or-in-none"></a></h3>
+<p><code>Remotes:</code> entries for this package are currently <strong>unpinned</strong> in both <code>ngr</code> and <code>rfp</code>. That is deliberate. If a version pin is ever wanted again, add it to <em>every</em> consumer in the same change.</p>
+<p><strong>Why:</strong> <code>Remotes:</code> pins are declared per-repo but resolved globally. When one consumer pins <code>@v0.2.0</code> while another pins <code>@v0.1.0</code>, <code>pak</code> is asked for one package at two tags and refuses with <code>dependency conflict</code> — a message naming neither the package nor the tags. Nothing in the failing repo’s own <code>DESCRIPTION</code> looks wrong. The original pin was added when this package had no releases, no CI, and a live <code>R CMD check</code> ERROR; it now runs a five-runner check matrix, so its own CI is the protection the pin used to provide.</p>
+<p><strong>How to apply:</strong> pin everywhere or nowhere — mixing is the only option that fails outright. Unpinned, accept that a break on this package’s default branch can turn a consumer’s CI red on an unrelated PR. Tags still exist (<code>v0.1.0</code>, <code>v0.2.0</code>, <code>v0.3.0</code>) for anyone wanting a reproducible install.</p>
+<p>(Source: machine-local memory <code>spacehakr-remotes-unpinned.md</code>, 2026-09-02)</p>
+<!-- BEGIN SOUL CONVENTIONS — DO NOT EDIT BELOW THIS LINE -->
+</div>
+</div>
 </div>
 <div class="section level1">
 <h1 id="cartography">Cartography<a class="anchor" aria-label="anchor" href="#cartography"></a></h1>
