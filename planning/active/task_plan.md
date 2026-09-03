@@ -55,76 +55,76 @@ behaviour except where the issue says it must change.
 
 ## Phase 1 — Fail loudly
 
-- [ ] Capture status: `stderr` to a temp file, `stdout = FALSE`, `on.exit(unlink(...))`
-- [ ] On non-zero, `cli::cli_abort()` naming the URL and the tail of stderr — bare
+- [x] Capture status: `stderr` to a temp file, `stdout = FALSE`, `on.exit(unlink(...))`
+- [x] On non-zero, `cli::cli_abort()` naming the URL and the tail of stderr — bare
       interpolated string, matching house style (no `c(x=, i=)` bullets anywhere in `R/`)
-- [ ] Test: stub `system2()` to return 1 and write canned stderr; assert the abort
+- [x] Test: stub `system2()` to return 1 and write canned stderr; assert the abort
       message contains both the URL and the stderr tail
-- [ ] Test: success path still returns `invisible(NULL)`
+- [x] Test: success path still returns `invisible(NULL)`
 
 ## Phase 2 — Create the GeoPackage if absent
 
-- [ ] Replace `chk::chk_file(path_gpkg)` with a check that the *parent directory* exists
-- [ ] `.spk_source_url_args()` gains `update =`; emit `-update -overwrite` only when the
+- [x] Replace `chk::chk_file(path_gpkg)` with a check that the *parent directory* exists
+- [x] `.spk_source_url_args()` gains `update =`; emit `-update -overwrite` only when the
       file already exists. `-update` against a missing file is an ogr2ogr error, and
       `-f GPKG` alone creates it
-- [ ] Tests: argument vector with and without `-update`; a missing parent directory
+- [x] Tests: argument vector with and without `-update`; a missing parent directory
       still errors with `class = "chk_error"`
 
 ## Phase 3 — Settable layer name
 
-- [ ] `layer = NULL` keeps `file_path_sans_ext(basename(url))`
-- [ ] Validate: `NULL`, or character the same length as `urls`; `cli::cli_abort()` on a
+- [x] `layer = NULL` keeps `file_path_sans_ext(basename(url))`
+- [x] Validate: `NULL`, or character the same length as `urls`; `cli::cli_abort()` on a
       length mismatch
-- [ ] Tests: default derivation unchanged; supplied name reaches `-nln`; length mismatch
+- [x] Tests: default derivation unchanged; supplied name reaches `-nln`; length mismatch
       aborts
 
 ## Phase 4 — Open options and CRS
 
-- [ ] `open_options` — character vector of `KEY=VALUE`, expanded to a repeated `-oo` per
+- [x] `open_options` — character vector of `KEY=VALUE`, expanded to a repeated `-oo` per
       element (`c(rbind("-oo", open_options))`)
-- [ ] `a_srs` (assign, for a CSV carrying no CRS) and `t_srs` (reproject) as separate
+- [x] `a_srs` (assign, for a CSV carrying no CRS) and `t_srs` (reproject) as separate
       arguments — the issue names both and they are not interchangeable
-- [ ] Fix `shQuote(query)` per decision 3
-- [ ] Tests: argument-vector equality for the CABIN shape
+- [x] Fix `shQuote(query)` per decision 3
+- [x] Tests: argument-vector equality for the CABIN shape
       (`-oo X_POSSIBLE_NAMES=Longitude -oo Y_POSSIBLE_NAMES=Latitude
       -oo KEEP_GEOM_COLUMNS=NO -a_srs EPSG:4326`); each option absent when `NULL`;
       `-where` receives the unquoted query
 
 ## Phase 5 — Non-UTF-8 sources
 
-- [ ] `encoding = NULL` (default) streams through `/vsicurl/` exactly as now
-- [ ] When supplied: fetch to a temp file with `httr2`, re-encode to UTF-8, hand
+- [x] `encoding = NULL` (default) streams through `/vsicurl/` exactly as now
+- [x] When supplied: fetch to a temp file with `httr2`, re-encode to UTF-8, hand
       `ogr2ogr` the local path. `on.exit()` cleanup for both temp files
-- [ ] Factor the source resolution so `.spk_source_url_args()` takes an
+- [x] Factor the source resolution so `.spk_source_url_args()` takes an
       already-resolved `source` — either `/vsicurl/<url>` or a local path — which keeps
       it pure and testable
-- [ ] Test with a **locally written UTF-16LE fixture**, no network: convert it, assert
+- [x] Test with a **locally written UTF-16LE fixture**, no network: convert it, assert
       the result reads back as UTF-8 with the expected header
-- [ ] Guarded end-to-end test (`skip_if(!nzchar(Sys.which("ogr2ogr")))`) converting that
+- [x] Guarded end-to-end test (`skip_if(!nzchar(Sys.which("ogr2ogr")))`) converting that
       fixture into a real GeoPackage layer — now possible offline, because this phase
       introduces the local-source path
 
 ## Phase 6 — Docs, NEWS, and the bilingual-header note
 
-- [ ] `@param` for every new argument; a worked `@examples` block for the coordinate-CSV
+- [x] `@param` for every new argument; a worked `@examples` block for the coordinate-CSV
       case, using a neutral public dataset — no internal buckets or project paths
-- [ ] `@details` note on bilingual slash-separated headers (`Site/Site`, `Year/Année`)
+- [x] `@details` note on bilingual slash-separated headers (`Site/Site`, `Year/Année`)
       and what `ogr2ogr` makes of the slashes and accents. Verify rather than assert —
       it is a general shape of Canadian federal open data, not one publisher's quirk
-- [ ] NEWS entry, fledge style (`- ` prefix, `[spk_source_url()]` bracket refs)
-- [ ] Note in NEWS that `query` behaviour changes with the `shQuote` fix
+- [x] NEWS entry, fledge style (`- ` prefix, `[spk_source_url()]` bracket refs)
+- [x] Note in NEWS that `query` behaviour changes with the `shQuote` fix
 
 ## Verification
 
-- [ ] `devtools::test()` — no network access added; the suite's zero-network bar holds
-- [ ] `devtools::check(vignettes = FALSE)` — 0 errors, 0 warnings. One pre-existing NOTE
+- [x] `devtools::test()` — no network access added; the suite's zero-network bar holds
+- [x] `devtools::check(vignettes = FALSE)` — 0 errors, 0 warnings. One pre-existing NOTE
       (`spk_odm.Rd` example line widths) is expected and unrelated
-- [ ] `lintr::lint()` per changed file — 120-char limit
-- [ ] **Restore the bug**, per phase: revert the status check → the stubbed-failure test
+- [x] `lintr::lint()` per changed file — 120-char limit
+- [x] **Restore the bug**, per phase: revert the status check → the stubbed-failure test
       must fail; drop `-oo` expansion → the argument test must fail. A test that cannot
       fail is not evidence
-- [ ] Confirm each of the issue's six acceptance criteria has a test, and say which test
+- [x] Confirm each of the issue's six acceptance criteria has a test, and say which test
       covers which
 - [ ] R-CMD-check green on all five runners
 
