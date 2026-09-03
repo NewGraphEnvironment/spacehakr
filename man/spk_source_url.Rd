@@ -2,40 +2,101 @@
 % Please edit documentation in R/spk_source_url.R
 \name{spk_source_url}
 \alias{spk_source_url}
-\title{Download and Convert Files to GeoPackage Layers with Optional Filtering}
+\title{Download and Convert Files to GeoPackage Layers}
 \usage{
-spk_source_url(path_gpkg, urls, query = NULL)
+spk_source_url(
+  path_gpkg,
+  urls,
+  query = NULL,
+  layer = NULL,
+  open_options = NULL,
+  a_srs = NULL,
+  t_srs = NULL,
+  encoding = NULL
+)
 }
 \arguments{
-\item{path_gpkg}{\link{character} A string specifying the path to the output GeoPackage
-file. Must already exist.}
+\item{path_gpkg}{\link{character} Path to the output GeoPackage. Created if it does not
+exist; its parent directory must exist.}
 
-\item{urls}{\link{character} A vector of URLs pointing to the files to be downloaded
-and converted.}
+\item{urls}{\link{character} URLs of the files to download and convert.}
 
-\item{query}{\link{character} or \link{NULL} An optional SQL query string used to filter the
-data during conversion. If \code{NULL} (default), no filter is applied.}
+\item{query}{\link{character} or \link{NULL} Optional SQL filter applied during conversion via
+\code{-where}. If \code{NULL} (default), no filter is applied.}
+
+\item{layer}{\link{character} or \link{NULL} Optional output layer name(s). If \code{NULL} (default),
+each layer is named for the file name of its URL. If supplied, must be the same
+length as \code{urls}.}
+
+\item{open_options}{\link{character} or \link{NULL} Optional GDAL open options as \code{"KEY=VALUE"}
+strings, each passed as a separate \code{-oo}.}
+
+\item{a_srs}{\link{character} or \link{NULL} Optional CRS to \emph{assign} to a source that carries
+none, e.g. \code{"EPSG:4326"}.}
+
+\item{t_srs}{\link{character} or \link{NULL} Optional CRS to \emph{reproject} the source to.}
+
+\item{encoding}{\link{character} or \link{NULL} Optional source encoding, e.g. \code{"UTF-16LE"}.
+When supplied the file is fetched and re-encoded to UTF-8 before conversion.}
 }
 \value{
 Invisible \code{NULL}. Called for its side effects.
 }
 \description{
 Downloads files from URLs and converts each into a layer within a GeoPackage
-using the \code{ogr2ogr} command-line tool from GDAL. Optionally applies an SQL
-filter to the data during conversion.
+using the \code{ogr2ogr} command-line tool from GDAL.
 }
 \details{
 Sources are read through GDAL's \verb{/vsicurl/} virtual filesystem, so anything
 \code{ogr2ogr} can open over HTTP works — FlatGeobuf, GeoJSON, GeoPackage, shapefile
-archives and plain CSV among them. The layer name is derived from the file name
-of each URL.
+archives and plain CSV among them.
+
+A non-spatial CSV carrying coordinate columns becomes a point layer by passing the
+relevant GDAL open options and assigning a CRS:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{open_options = c("X_POSSIBLE_NAMES=Longitude",
+                 "Y_POSSIBLE_NAMES=Latitude",
+                 "KEEP_GEOM_COLUMNS=NO"),
+a_srs = "EPSG:4326"
+}\if{html}{\out{</div>}}
+
+Without them the file still imports, as an attribute table with no geometry.
+
+\code{a_srs} \emph{assigns} a CRS to a source that carries none; \code{t_srs} \emph{reprojects} a source
+that already has one. They are not interchangeable.
+
+GDAL's CSV driver has no general encoding open option, so a source that is not UTF-8
+cannot be fixed with \code{open_options}. Pass \code{encoding} instead and the file is fetched
+and re-encoded before \code{ogr2ogr} sees it, rather than streamed through \verb{/vsicurl/}.
+
+Canadian federal open data often ships bilingual, slash-separated column headers —
+\code{Site/Site}, \code{Year/Année}. Verified against GDAL 3.x: both the slash and the accent
+survive into the GeoPackage exactly, so \code{ogrinfo} reports the fields as \code{Site/Site}
+and \code{Year/Année}.
+
+They do not survive the trip back into R unchanged, though. \code{\link[sf:st_read]{sf::st_read()}} returns a
+data frame, and R makes column names syntactic — the slash becomes a dot
+(\code{Site.Site}) while the accent is kept (\code{Year.Année}). So the name in the file and the
+name in your session differ, and a downstream SQL \code{query} against this layer must use
+the \emph{file's} name, quoted.
 }
 \examples{
 \dontrun{
 path_gpkg <- fs::path(tempdir(), "layers.gpkg")
-base_url <- "https://raw.githubusercontent.com/smnorris/bcfishpass/main/parameters"
-urls <- paste0(base_url, "/example_newgraph/parameters_habitat_thresholds.csv")
-spk_source_url(path_gpkg, urls)
+
+# a coordinate CSV published as UTF-16, landing as a point layer
+spk_source_url(
+  path_gpkg = path_gpkg,
+  urls = "https://example.org/opendata/sites.csv",
+  layer = "sites",
+  open_options = c(
+    "X_POSSIBLE_NAMES=Longitude",
+    "Y_POSSIBLE_NAMES=Latitude",
+    "KEEP_GEOM_COLUMNS=NO"
+  ),
+  a_srs = "EPSG:4326",
+  encoding = "UTF-16LE"
+)
 }
 
 }
