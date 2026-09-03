@@ -1,5 +1,31 @@
 # Changelog
 
+## spacehakr 0.2.0.9000 (development)
+
+- \[spk_source_url()\] now fails loudly. The `ogr2ogr` exit status was
+  never checked, so a bad URL, a 404 or an unreadable source returned
+  exactly what success returned, and a layer that was never written
+  looked identical to one that was. `stderr` now goes to a file rather
+  than being merged into a discarded value, and a non-zero status aborts
+  naming the URL and the tail of the diagnostic.
+
+- \[spk_source_url()\] gains `open_options`, `a_srs`, `t_srs`, `layer`
+  and `encoding`. A non-spatial CSV carrying coordinate columns can now
+  become a point layer (`-oo X_POSSIBLE_NAMES=`, `-a_srs`), a source
+  that is not UTF-8 is fetched and re-encoded before conversion (GDAL’s
+  CSV driver has no encoding open option), and the layer name no longer
+  has to be whatever the URL’s file name happens to be.
+
+- \[spk_source_url()\] creates the output GeoPackage when it does not
+  exist, rather than requiring one to append to.
+
+- **Behaviour change:** \[spk_source_url()\]’s `query` is no longer
+  passed through [`shQuote()`](https://rdrr.io/r/base/shQuote.html).
+  [`system2()`](https://rdrr.io/r/base/system2.html) with an argument
+  vector does not go through a shell, so the quotes were reaching
+  `-where` literally and the filter is unlikely to have worked. A caller
+  who compensated by pre-quoting their query should remove that quoting.
+
 ## spacehakr 0.2.0
 
 - Add \[spk_source_url()\] and \[spk_source_bcdata()\], which fetch

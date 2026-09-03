@@ -259,9 +259,9 @@ ndvi_list <- items$features |>
   purrr::map(spk_stac_calc, aoi = aoi, timing = TRUE) |>
   purrr::set_names(purrr::map_chr(items$features, "id"))
 #> ℹ read asset_a: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_a elapsed (s): 1.34
+#> ℹ read asset_a elapsed (s): 1.08
 #> ℹ read asset_b: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_b elapsed (s): 0.803
+#> ℹ read asset_b elapsed (s): 0.652
 ```
 
 Create a mapview object for each NDVI raster with a red-yellow-green
@@ -328,65 +328,65 @@ ndvi_by_year <- purrr::set_names(years) |>
       purrr::set_names(purrr::map_chr(items$features, "id"))
   })
 #> ℹ read asset_a: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_a elapsed (s): 0.01
+#> ℹ read asset_a elapsed (s): 0.009
 #> ℹ read asset_b: LE07_L2SP_051022_20000624_02_T1
 #> ℹ read asset_b elapsed (s): 0.008
 #> ℹ read asset_a: LE07_L2SP_051022_20050622_02_T1
-#> ℹ read asset_a elapsed (s): 1
+#> ℹ read asset_a elapsed (s): 0.787
 #> ℹ read asset_b: LE07_L2SP_051022_20050622_02_T1
-#> ℹ read asset_b elapsed (s): 0.767
+#> ℹ read asset_b elapsed (s): 0.627
 #> ℹ read asset_a: LE07_L2SP_051022_20100706_02_T1
-#> ℹ read asset_a elapsed (s): 0.916
+#> ℹ read asset_a elapsed (s): 0.812
 #> ℹ read asset_b: LE07_L2SP_051022_20100706_02_T1
-#> ℹ read asset_b elapsed (s): 0.76
+#> ℹ read asset_b elapsed (s): 0.63
 #> ℹ read asset_a: LE07_L2SP_051022_20100620_02_T1
-#> ℹ read asset_a elapsed (s): 0.901
+#> ℹ read asset_a elapsed (s): 0.729
 #> ℹ read asset_b: LE07_L2SP_051022_20100620_02_T1
-#> ℹ read asset_b elapsed (s): 0.754
+#> ℹ read asset_b elapsed (s): 0.609
 #> ℹ read asset_a: LT05_L2SP_052022_20100619_02_T1
-#> ℹ read asset_a elapsed (s): 0.92
+#> ℹ read asset_a elapsed (s): 0.727
 #> ℹ read asset_b: LT05_L2SP_052022_20100619_02_T1
-#> ℹ read asset_b elapsed (s): 0.748
+#> ℹ read asset_b elapsed (s): 0.608
 #> ℹ read asset_a: LE07_L2SP_051022_20150704_02_T1
-#> ℹ read asset_a elapsed (s): 1.06
+#> ℹ read asset_a elapsed (s): 0.834
 #> ℹ read asset_b: LE07_L2SP_051022_20150704_02_T1
-#> ℹ read asset_b elapsed (s): 0.787
+#> ℹ read asset_b elapsed (s): 0.637
 #> ℹ read asset_a: LC08_L2SP_052022_20150703_02_T1
-#> ℹ read asset_a elapsed (s): 0.895
+#> ℹ read asset_a elapsed (s): 0.727
 #> ℹ read asset_b: LC08_L2SP_052022_20150703_02_T1
-#> ℹ read asset_b elapsed (s): 0.762
+#> ℹ read asset_b elapsed (s): 0.631
 #> ℹ read asset_a: LC08_L2SP_051022_20150626_02_T1
-#> ℹ read asset_a elapsed (s): 0.903
+#> ℹ read asset_a elapsed (s): 0.858
 #> ℹ read asset_b: LC08_L2SP_051022_20150626_02_T1
-#> ℹ read asset_b elapsed (s): 0.769
+#> ℹ read asset_b elapsed (s): 0.622
 #> ℹ read asset_a: LE07_L2SP_052022_20150609_02_T1
-#> ℹ read asset_a elapsed (s): 0.952
+#> ℹ read asset_a elapsed (s): 0.779
 #> ℹ read asset_b: LE07_L2SP_052022_20150609_02_T1
-#> ℹ read asset_b elapsed (s): 0.794
+#> ℹ read asset_b elapsed (s): 0.634
 #> ℹ read asset_a: LC08_L2SP_052022_20150601_02_T1
-#> ℹ read asset_a elapsed (s): 0.93
+#> ℹ read asset_a elapsed (s): 0.725
 #> ℹ read asset_b: LC08_L2SP_052022_20150601_02_T1
-#> ℹ read asset_b elapsed (s): 0.759
+#> ℹ read asset_b elapsed (s): 0.604
 #> ℹ read asset_a: LC08_L2SP_051022_20200709_02_T1
-#> ℹ read asset_a elapsed (s): 0.96
+#> ℹ read asset_a elapsed (s): 0.789
 #> ℹ read asset_b: LC08_L2SP_051022_20200709_02_T1
-#> ℹ read asset_b elapsed (s): 0.782
+#> ℹ read asset_b elapsed (s): 0.635
 #> ℹ read asset_a: LE07_L2SP_050022_20200624_02_T1
-#> ℹ read asset_a elapsed (s): 0.918
+#> ℹ read asset_a elapsed (s): 0.725
 #> ℹ read asset_b: LE07_L2SP_050022_20200624_02_T1
-#> ℹ read asset_b elapsed (s): 0.754
+#> ℹ read asset_b elapsed (s): 0.607
 #> ℹ read asset_a: LC08_L2SP_052022_20250714_02_T1
-#> ℹ read asset_a elapsed (s): 0.886
+#> ℹ read asset_a elapsed (s): 0.708
 #> ℹ read asset_b: LC08_L2SP_052022_20250714_02_T1
-#> ℹ read asset_b elapsed (s): 0.741
+#> ℹ read asset_b elapsed (s): 0.598
 #> ℹ read asset_a: LC09_L2SP_052022_20250620_02_T1
-#> ℹ read asset_a elapsed (s): 0.942
+#> ℹ read asset_a elapsed (s): 0.71
 #> ℹ read asset_b: LC09_L2SP_052022_20250620_02_T1
-#> ℹ read asset_b elapsed (s): 0.74
+#> ℹ read asset_b elapsed (s): 0.594
 #> ℹ read asset_a: LC09_L2SP_052022_20250604_02_T1
-#> ℹ read asset_a elapsed (s): 0.885
+#> ℹ read asset_a elapsed (s): 1.23
 #> ℹ read asset_b: LC09_L2SP_052022_20250604_02_T1
-#> ℹ read asset_b elapsed (s): 0.738
+#> ℹ read asset_b elapsed (s): 0.595
 
 ndvi_best_by_year <- ndvi_by_year |>
   purrr::map(function(ndvi_list) {
