@@ -1,4 +1,4 @@
-# spacehakr 0.3.0.9000 (development)
+# spacehakr 0.4.0
 
 - **[spk_source_url()] silently failed on any URL containing `&`, which is every service
   endpoint.** `system2()` pastes its arguments into a command string and runs it through
