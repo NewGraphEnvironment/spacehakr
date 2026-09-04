@@ -107,10 +107,18 @@ Raised by the plan review as a prediction, confirmed by measurement.
   simply has GDAL installed, which is what hid it. Reproduced locally by stripping GDAL
   from `PATH`, which turns a CI-only failure into a one-command check.
 
-  The fix stubs the guard rather than adding `skip_no_ogr()`, because four of five runners
-  have no `ogr2ogr` binary (`sf` pulls `libgdal-dev`, which does not ship it) and skipping
-  would leave the fix with **no coverage at all** there. Verified that the choice is
-  load-bearing: with GDAL absent, removing `shQuote()` still gives FAIL 2 and ignoring
-  `vsi` still gives FAIL 3, so the mock twins genuinely guard the fix on those runners.
+  The fix stubs the guard rather than adding `skip_no_ogr()`, because the runners without
+  an `ogr2ogr` binary would otherwise have **no coverage at all** of the fix. Verified that
+  the choice is load-bearing: with GDAL absent, removing `shQuote()` still gives FAIL 2 and
+  ignoring `vsi` still gives FAIL 3, so the mock twins genuinely guard the fix there.
+
+  **Correction, measured from the green run.** The commit message for this fix, and an
+  earlier draft of this paragraph, said "four of five runners have no `ogr2ogr` binary".
+  That is wrong. The actual split, read off the passing run: the three ubuntu runners
+  report `PASS 196 | SKIP 2`, identical to a local run with GDAL installed — so `ogr2ogr`
+  *is* present there and the end-to-end tests really execute. macOS and Windows report
+  `PASS 182 | SKIP 9`. So the guard-stubbing matters for two runners, not four, and the
+  end-to-end coverage is better than the code-check review predicted. The commit message
+  is immutable and stays wrong; this is the correction.
 
 Closed by: PR #25 (branch `23-spk-source-url-vsi-streaming`)
