@@ -101,4 +101,4 @@ Raised by the plan review as a prediction, confirmed by measurement.
   survive shell parsing byte-identical — rather than the quoting style, which is an
   implementation detail.
 
-Closed by: PR #24 (branch `23-spk-source-url-vsi-streaming`)
+Closed by: PR #25 (branch `23-spk-source-url-vsi-streaming`)
