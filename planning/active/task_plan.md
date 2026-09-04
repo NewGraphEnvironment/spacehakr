@@ -35,13 +35,13 @@ validated transport choice, and unifying them is a separate call.
 
 ## Phase 1: Tests first
 
-- [ ] `.spk_source_resolve()` returns `/vsicurl/<url>` when `vsi` is defaulted — extend the
+- [x] `.spk_source_resolve()` returns `/vsicurl/<url>` when `vsi` is defaulted — extend the
       existing pin at `test-spk_source_url.R:197`, do not replace it
-- [ ] `.spk_source_resolve()` returns `/vsicurl_streaming/<url>` for `vsi = "curl_streaming"`
-- [ ] `spk_source_url()` rejects an unknown `vsi` value, naming the valid set
-- [ ] `spk_source_url()` aborts when `layer` is NULL and a URL carries a query string
-- [ ] `spk_source_url()` aborts when `encoding` is combined with a non-default `vsi`
-- [ ] `.spk_source_url_args()` passes a `/vsicurl_streaming/` source through unchanged as
+- [x] `.spk_source_resolve()` returns `/vsicurl_streaming/<url>` for `vsi = "curl_streaming"`
+- [x] `spk_source_url()` rejects an unknown `vsi` value, naming the valid set
+- [x] `spk_source_url()` aborts when `layer` is NULL and a URL carries a query string
+- [x] `spk_source_url()` aborts when `encoding` is combined with a non-default `vsi`
+- [x] `.spk_source_url_args()` passes a `/vsicurl_streaming/` source through unchanged as
       the final element
 
 The WFS case itself is **not** end-to-end testable here: this package's standing bar is
@@ -50,9 +50,14 @@ GDAL CLI. The live confirmation is Phase 5 and lands in `findings.md`, not the s
 
 ## Phase 2: The `vsi` argument
 
-- [ ] `vsi = c("curl", "curl_streaming")` in the signature, resolved with `match.arg()`
-- [ ] `.spk_source_resolve(url, encoding, vsi)` builds `paste0("/vsi", vsi, "/", url)`
-- [ ] Abort when `!is.null(encoding) && !identical(vsi, "curl")` — the two are competing
+- [x] `vsi = "curl"` in the signature, validated against `c("curl", "curl_streaming")`
+      with an explicit `cli_abort`. **Changed from the plan's `match.arg()`:** match.arg
+      partial-matches, so `"curl_stream"` was silently accepted and the call went on to
+      shell out to a live URL; and its message reads `'arg' should be one of ...`, naming
+      neither the argument nor the bad value — which was the entire reason for choosing an
+      enumerated argument over a free-form prefix.
+- [x] `.spk_source_resolve(url, encoding, vsi)` builds `paste0("/vsi", vsi, "/", url)`
+- [x] Abort when `!is.null(encoding) && !identical(vsi, "curl")` — the two are competing
       statements about transport, and silently ignoring one is how the current
       encoding-as-transport-switch workaround came about. A default `vsi` alongside
       `encoding` stays legal, so no existing caller is affected.
@@ -72,7 +77,7 @@ With `vsi = "curl_streaming"` the resolved source is `/vsicurl_streaming/<url>`,
 not identical to the reconstruction — so an `unlink()` gets registered against a virtual
 path. Inert today, and wrong in the direction that stays quiet.
 
-- [ ] Replace with `if (!is.null(encoding))`. The encoding branch is the only one that
+- [x] Replace with `if (!is.null(encoding))`. The encoding branch is the only one that
       writes a temp file, and it is knowable before the resolver runs.
 
 ## Phase 3: Layer-name guard
@@ -81,7 +86,7 @@ Measured, GDAL 3.13.0 / R on this machine: `basename()` of a WFS `GetFeature` UR
 entire query string, and `file_path_sans_ext()` leaves it intact. The derived layer name is
 `ows?service=WFS&version=2.0.0&request=GetFeature&typeName=…`.
 
-- [ ] When `layer` is NULL and a URL contains `?`, abort naming the URL and asking for
+- [x] When `layer` is NULL and a URL contains `?`, abort naming the URL and asking for
       `layer`. Checked in the same pre-flight block as the existing length check, before
       any `ogr2ogr` runs — not per-iteration after the first layer has been written.
 
@@ -98,7 +103,7 @@ entire query string, and `file_path_sans_ext()` leaves it intact. The derived la
 
 ## Phase 5: Verification
 
-- [ ] **Confirm the premise live** before believing any of this. The whole change is worth
+- [x] **Confirm the premise live** before believing any of this. The whole change is worth
       nothing if `/vsicurl_streaming/` does not actually fix it, and the issue's
       measurement is GDAL 3.13.3 where this machine has 3.13.0:
 
@@ -112,15 +117,16 @@ entire query string, and `file_path_sans_ext()` leaves it intact. The derived la
       `findings.md` with the GDAL version — a positive control alongside the failure, so a
       broken probe cannot read as a confirmed diagnosis.
 
-- [ ] **Restore the bug, three faults, confirm the tests go red** — the pattern the #256
+- [x] **Restore the bug, three faults, confirm the tests go red** — the pattern the #256
       archive used. Record the FAIL counts:
 
       | Fault injected | Expect |
       |---|---|
-      | `vsi` ignored, always `/vsicurl/` | FAIL |
-      | cleanup check back to the `paste0()` reconstruction | FAIL |
-      | layer guard removed | FAIL |
-      | restored | PASS |
+      | `vsi` ignored, always `/vsicurl/` | FAIL 3 |
+      | cleanup check back to the `paste0()` reconstruction | FAIL 1 |
+      | layer guard removed | FAIL 3 |
+      | encoding/`vsi` mutual exclusion removed | FAIL 3 |
+      | restored | PASS 55 |
 
 - [ ] `Rscript -e 'devtools::test()' 2>&1 | grep -E "(FAIL|ERROR|PASS)" | tail -5`
 - [ ] `lintr::lint_package()` — diff against the `HEAD` baseline for the touched file

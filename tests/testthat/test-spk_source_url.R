@@ -201,6 +201,224 @@ testthat::test_that(".spk_source_resolve streams through /vsicurl when encoding 
   )
 })
 
+# ---- virtual filesystem selection -------------------------------------------
+
+# Measured 2026-09-04, GDAL 3.13.0: a BCGW WFS GetFeature endpoint 404s on HEAD and
+# returns a full-body 200 to a Range request rather than a 206, so /vsicurl/'s probe
+# fails before any driver is tried. /vsicurl_streaming/ issues one sequential GET.
+# The live check is in planning findings; it cannot live here because no test in this
+# package touches the network.
+
+testthat::test_that(".spk_source_resolve honours vsi", {
+  testthat::expect_equal(
+    .spk_source_resolve("https://example.com/a.csv", vsi = "curl"),
+    "/vsicurl/https://example.com/a.csv"
+  )
+  testthat::expect_equal(
+    .spk_source_resolve("https://example.com/a.csv", vsi = "curl_streaming"),
+    "/vsicurl_streaming/https://example.com/a.csv"
+  )
+})
+
+testthat::test_that(".spk_source_resolve keeps a query string intact", {
+  url <- "https://example.com/ows?service=WFS&typeName=pub%3AX&outputFormat=application%2Fjson"
+  testthat::expect_equal(
+    .spk_source_resolve(url, vsi = "curl_streaming"),
+    paste0("/vsicurl_streaming/", url)
+  )
+})
+
+testthat::test_that("spk_source_url rejects an unknown vsi, naming the valid values", {
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  msg <- tryCatch(
+    spk_source_url(
+      path_gpkg = gpkg,
+      urls = "https://example.com/a.csv",
+      vsi = "vsis3"
+    ),
+    error = conditionMessage
+  )
+  # the valid set, not merely the argument name -- a message that says only "invalid
+  # `vsi`" leaves the caller guessing at the spelling
+  testthat::expect_match(msg, "curl_streaming")
+  testthat::expect_match(msg, "vsi")
+})
+
+testthat::test_that("vsi refuses a partial match rather than resolving it", {
+  # match.arg() would accept "curl_stream" as a unique prefix of "curl_streaming" and
+  # proceed. That was measured: the call went on to shell out to ogr2ogr against a live
+  # URL, which no test in this package may do. Exact matching is deliberate.
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  msg <- tryCatch(
+    spk_source_url(path_gpkg = gpkg, urls = "https://example.com/a.csv", vsi = "curl_stream"),
+    error = conditionMessage
+  )
+  testthat::expect_match(msg, "curl_stream")
+  testthat::expect_match(msg, "vsi")
+})
+
+testthat::test_that("spk_source_url refuses encoding combined with a non-default vsi", {
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  msg <- tryCatch(
+    spk_source_url(
+      path_gpkg = gpkg,
+      urls = "https://example.com/a.csv",
+      layer = "a",
+      encoding = "UTF-16LE",
+      vsi = "curl_streaming"
+    ),
+    error = conditionMessage
+  )
+  testthat::expect_match(msg, "encoding")
+  testthat::expect_match(msg, "vsi")
+  # the two are competing statements about transport; the message must say so rather
+  # than only naming the arguments
+  testthat::expect_match(msg, "downloaded|download")
+})
+
+testthat::test_that("spk_source_url allows encoding with the default vsi", {
+  # the mutual exclusion must not fire for callers who never mention vsi -- this is the
+  # whole existing encoding path and it has to keep working. Both the fetch and the CLI
+  # are stubbed: no test here touches the network.
+  testthat::skip_if_not_installed("mockery")
+
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  local <- tempfile(fileext = ".csv")
+  writeLines("Site,Longitude,Latitude", local)
+  on.exit(unlink(local), add = TRUE)
+
+  seen <- NULL
+  f <- spk_source_url
+  mockery::stub(f, ".spk_source_resolve", function(...) local)
+  mockery::stub(f, ".spk_ogr2ogr", function(args, url) {
+    seen <<- args
+    invisible(NULL)
+  })
+
+  testthat::expect_no_error(
+    f(
+      path_gpkg = gpkg,
+      urls = "https://example.com/a.csv",
+      encoding = "UTF-16LE"
+    )
+  )
+  testthat::expect_equal(seen[[length(seen)]], local)
+})
+
+testthat::test_that("an encoded source still registers its temp file for cleanup", {
+  # the mirror of the streaming case below: the encoding branch is the one that really
+  # does write a temp file, and replacing the cleanup check must not drop it
+  testthat::skip_if_not_installed("mockery")
+
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  local <- tempfile(fileext = ".csv")
+  writeLines("Site,Longitude,Latitude", local)
+  on.exit(unlink(local), add = TRUE)
+
+  unlinked <- character(0)
+  f <- spk_source_url
+  mockery::stub(f, ".spk_source_resolve", function(...) local)
+  mockery::stub(f, ".spk_ogr2ogr", function(...) invisible(NULL))
+  mockery::stub(f, "unlink", function(x, ...) {
+    unlinked <<- c(unlinked, x)
+    0L
+  })
+
+  f(
+    path_gpkg = gpkg,
+    urls = "https://example.com/a.csv",
+    encoding = "UTF-16LE"
+  )
+
+  testthat::expect_true(local %in% unlinked)
+})
+
+# ---- layer names derived from a query-string URL ----------------------------
+
+testthat::test_that("spk_source_url requires layer when a URL carries a query string", {
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  url <- "https://example.com/ows?service=WFS&request=GetFeature&typeName=pub%3AX"
+
+  msg <- tryCatch(
+    spk_source_url(path_gpkg = gpkg, urls = url, vsi = "curl_streaming"),
+    error = conditionMessage
+  )
+  testthat::expect_match(msg, "layer")
+  testthat::expect_match(msg, "query string")
+
+  # measured: the derived name would otherwise be the entire query string
+  testthat::expect_true(grepl("?", tools::file_path_sans_ext(basename(url)), fixed = TRUE))
+})
+
+testthat::test_that("the layer guard fires before any ogr2ogr runs", {
+  # a good URL first, a query-string URL second: the abort must happen in pre-flight,
+  # not after the first layer has already been written to the GeoPackage
+  testthat::skip_if_not_installed("mockery")
+
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  called <- FALSE
+  f <- spk_source_url
+  mockery::stub(f, ".spk_ogr2ogr", function(...) {
+    called <<- TRUE
+    invisible(NULL)
+  })
+
+  testthat::expect_error(
+    f(
+      path_gpkg = gpkg,
+      urls = c("https://example.com/a.csv", "https://example.com/ows?service=WFS"),
+      vsi = "curl_streaming"
+    ),
+    "query string"
+  )
+  testthat::expect_false(called)
+})
+
+testthat::test_that("a supplied layer makes a query-string URL legal", {
+  testthat::skip_if_not_installed("mockery")
+
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  seen <- NULL
+  f <- spk_source_url
+  mockery::stub(f, ".spk_ogr2ogr", function(args, url) {
+    seen <<- args
+    invisible(NULL)
+  })
+
+  url <- "https://example.com/ows?service=WFS&typeName=pub%3AX"
+  f(path_gpkg = gpkg, urls = url, layer = "streams", vsi = "curl_streaming")
+
+  testthat::expect_equal(seen[[length(seen)]], paste0("/vsicurl_streaming/", url))
+  testthat::expect_equal(seen[which(seen == "-nln") + 1L], "streams")
+})
+
+# ---- temp-file cleanup ------------------------------------------------------
+
+testthat::test_that("a streaming source registers no temp-file cleanup", {
+  # the cleanup decision must not be made by reconstructing the /vsicurl/ string --
+  # with vsi = "curl_streaming" the resolved source is not that string, and the old
+  # check would have registered unlink() against a virtual path
+  testthat::skip_if_not_installed("mockery")
+
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  unlinked <- character(0)
+  f <- spk_source_url
+  mockery::stub(f, ".spk_ogr2ogr", function(...) invisible(NULL))
+  mockery::stub(f, "unlink", function(x, ...) {
+    unlinked <<- c(unlinked, x)
+    0L
+  })
+
+  f(
+    path_gpkg = gpkg,
+    urls = "https://example.com/ows?service=WFS",
+    layer = "streams",
+    vsi = "curl_streaming"
+  )
+
+  testthat::expect_false(any(grepl("^/vsi", unlinked)))
+})
+
 # ---- end to end, offline, only where GDAL exists ----------------------------
 
 testthat::test_that("a UTF-16 coordinate CSV becomes a point layer", {

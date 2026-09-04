@@ -90,7 +90,8 @@ spk_source_url <- function(path_gpkg,
                            open_options = NULL,
                            a_srs = NULL,
                            t_srs = NULL,
-                           encoding = NULL) {
+                           encoding = NULL,
+                           vsi = "curl") {
   chk::chk_string(path_gpkg)
   chk::chk_dir(fs::path_dir(path_gpkg))
   chk::chk_character(urls)
@@ -100,11 +101,51 @@ spk_source_url <- function(path_gpkg,
   if (!is.null(a_srs)) chk::chk_string(a_srs)
   if (!is.null(t_srs)) chk::chk_string(t_srs)
   if (!is.null(encoding)) chk::chk_string(encoding)
+  chk::chk_string(vsi)
+
+  # match.arg() would partial-match "curl_stream" to "curl_streaming" and, on a genuine
+  # typo, report `'arg' should be one of ...` -- naming neither the argument nor the
+  # value supplied. An explicit check is the reason this is an enumerated argument
+  # rather than a free-form prefix string.
+  if (!vsi %in% c("curl", "curl_streaming")) {
+    cli::cli_abort(c(
+      "`vsi` must be {.val curl} or {.val curl_streaming}, not {.val {vsi}}.",
+      "i" = paste("{.val curl_streaming} reads the source with a single sequential GET.",
+                  "Use it for a service endpoint that does not answer HEAD or serve",
+                  "range requests -- a WFS {.code GetFeature} URL, for instance.")
+    ))
+  }
 
   if (!is.null(layer) && length(layer) != length(urls)) {
     cli::cli_abort(
       "`layer` must be NULL or the same length as `urls` ({length(urls)}), not {length(layer)}."
     )
+  }
+
+  # `encoding` downloads and re-encodes to a local file, which never reaches a virtual
+  # filesystem at all. Honouring one and dropping the other silently is how `encoding`
+  # came to be used as a transport switch in the first place.
+  if (!is.null(encoding) && !identical(vsi, "curl")) {
+    cli::cli_abort(c(
+      "`encoding` and {.code vsi = \"{vsi}\"} cannot be combined.",
+      "i" = paste("A source with an `encoding` is downloaded before conversion,",
+                  "so it never reaches a virtual filesystem at all."),
+      "x" = "Supply one or the other."
+    ))
+  }
+
+  # A query-string URL has no usable file name: measured, `basename()` of a WFS
+  # GetFeature request returns the entire query string. Checked over every URL up front
+  # so the abort cannot land after earlier layers have already been written.
+  if (is.null(layer)) {
+    bad <- urls[grepl("?", urls, fixed = TRUE)]
+    if (length(bad) > 0L) {
+      cli::cli_abort(c(
+        "`layer` is required when a URL carries a query string.",
+        "i" = "No usable layer name can be derived from {.url {bad[[1]]}}.",
+        "x" = "Affected: {length(bad)} of {length(urls)}."
+      ))
+    }
   }
 
   if (!nzchar(Sys.which("ogr2ogr"))) {
@@ -113,8 +154,11 @@ spk_source_url <- function(path_gpkg,
 
   for (i in seq_along(urls)) {
     url <- urls[[i]]
-    source <- .spk_source_resolve(url, encoding)
-    if (!identical(source, paste0("/vsicurl/", url))) {
+    source <- .spk_source_resolve(url, encoding, vsi)
+    # `encoding` is the only branch that writes a temp file, and it is knowable before
+    # the resolver runs. Inferring it by reconstructing the resolver's return value
+    # instead would register a cleanup against a virtual path the moment `vsi` moves.
+    if (!is.null(encoding)) {
       on.exit(unlink(source), add = TRUE)
     }
 
@@ -195,9 +239,9 @@ stderr_tail <- function(path) {
 #' @noRd
 #' @importFrom httr2 request req_perform
 #' @importFrom tools file_ext
-.spk_source_resolve <- function(url, encoding = NULL) {
+.spk_source_resolve <- function(url, encoding = NULL, vsi = "curl") {
   if (is.null(encoding)) {
-    return(paste0("/vsicurl/", url))
+    return(paste0("/vsi", vsi, "/", url))
   }
 
   raw_file <- tempfile(fileext = paste0(".", tools::file_ext(url)))

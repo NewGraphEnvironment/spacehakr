@@ -12,3 +12,13 @@
 - Created branch `23-spk-source-url-vsi-streaming` off main
 - Scaffolded PWF baseline from issue #23 with approved phases
 - Next: Phase 1 — tests first
+
+- Confirmed the premise live on GDAL 3.13.0 against a second BCGW layer: `/vsicurl/`
+  exits 1 with no file, `/vsicurl_streaming/` exits 0 with Feature Count 1, plain `curl`
+  200/417,978 bytes as positive control. Found the issue's stated cause is wrong — the
+  endpoint 404s on HEAD and ignores Range, and carries no `cache-control` header at all.
+- Phases 1-3 landed. Four injected faults all caught (FAIL 3 / 1 / 3 / 3), restored PASS 55.
+- Departed from the plan on one point: `match.arg()` replaced with an explicit check.
+  It partial-matched a typo through to a live network call, and its message names neither
+  the argument nor the value.
+- Next: Phase 4 documentation and NEWS.
