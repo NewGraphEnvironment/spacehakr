@@ -27,6 +27,17 @@ write_utf16le <- function(lines, path) {
   path
 }
 
+# spk_source_url() checks Sys.which("ogr2ogr") before its loop. The mock-based tests
+# below never reach the CLI, but they do reach that guard -- and four of five check
+# runners have no ogr2ogr binary (sf pulls libgdal-dev, which does not ship it). Stubbing
+# the guard is what keeps them running there; skipping instead would leave the fix with
+# no coverage at all on those runners. Measured: without this, FAIL 6 on macos-latest and
+# windows-latest while passing locally, because this machine has GDAL on PATH.
+stub_ogr_on_path <- function(f) {
+  mockery::stub(f, "Sys.which", function(names) "/usr/bin/ogr2ogr")
+  f
+}
+
 seed_gpkg <- function() {
   gpkg <- tempfile(fileext = ".gpkg")
   sf::st_write(
@@ -380,7 +391,7 @@ testthat::test_that("spk_source_url allows encoding with the default vsi", {
   on.exit(unlink(local), add = TRUE)
 
   seen <- NULL
-  f <- spk_source_url
+  f <- stub_ogr_on_path(spk_source_url)
   mockery::stub(f, ".spk_source_resolve", function(...) local)
   mockery::stub(f, ".spk_ogr2ogr", function(args, url) {
     seen <<- args
@@ -407,7 +418,7 @@ testthat::test_that("every temp file is cleaned up, not just the last", {
   gpkg <- file.path(tempdir(), "layers.gpkg")
   made <- character(0)
 
-  f <- spk_source_url
+  f <- stub_ogr_on_path(spk_source_url)
   mockery::stub(f, ".spk_source_resolve", function(...) {
     p <- tempfile(fileext = ".csv")
     writeLines("Site,Longitude,Latitude", p)
@@ -442,7 +453,7 @@ testthat::test_that("an encoded source still registers its temp file for cleanup
   on.exit(unlink(local), add = TRUE)
 
   unlinked <- character(0)
-  f <- spk_source_url
+  f <- stub_ogr_on_path(spk_source_url)
   mockery::stub(f, ".spk_source_resolve", function(...) local)
   mockery::stub(f, ".spk_ogr2ogr", function(...) invisible(NULL))
   mockery::stub(f, "unlink", function(x, ...) {
@@ -483,7 +494,7 @@ testthat::test_that("the layer guard fires before any ogr2ogr runs", {
 
   gpkg <- file.path(tempdir(), "layers.gpkg")
   called <- FALSE
-  f <- spk_source_url
+  f <- stub_ogr_on_path(spk_source_url)
   mockery::stub(f, ".spk_ogr2ogr", function(...) {
     called <<- TRUE
     invisible(NULL)
@@ -505,7 +516,7 @@ testthat::test_that("a supplied layer makes a query-string URL legal", {
 
   gpkg <- file.path(tempdir(), "layers.gpkg")
   seen <- NULL
-  f <- spk_source_url
+  f <- stub_ogr_on_path(spk_source_url)
   mockery::stub(f, ".spk_ogr2ogr", function(args, url) {
     seen <<- args
     invisible(NULL)
@@ -528,7 +539,7 @@ testthat::test_that("a streaming source registers no temp-file cleanup", {
 
   gpkg <- file.path(tempdir(), "layers.gpkg")
   unlinked <- character(0)
-  f <- spk_source_url
+  f <- stub_ogr_on_path(spk_source_url)
   mockery::stub(f, ".spk_ogr2ogr", function(...) invisible(NULL))
   mockery::stub(f, "unlink", function(x, ...) {
     unlinked <<- c(unlinked, x)

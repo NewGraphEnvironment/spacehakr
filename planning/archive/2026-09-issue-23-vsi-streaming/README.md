@@ -101,4 +101,16 @@ Raised by the plan review as a prediction, confirmed by measurement.
   survive shell parsing byte-identical — rather than the quoting style, which is an
   implementation detail.
 
+- The mock-based tests passed locally and failed on **macos-latest and windows-latest**
+  with `ogr2ogr is not on the PATH`. `spk_source_url()` checks `Sys.which("ogr2ogr")`
+  before its loop, and stubbing `.spk_ogr2ogr()` does not bypass that guard — this machine
+  simply has GDAL installed, which is what hid it. Reproduced locally by stripping GDAL
+  from `PATH`, which turns a CI-only failure into a one-command check.
+
+  The fix stubs the guard rather than adding `skip_no_ogr()`, because four of five runners
+  have no `ogr2ogr` binary (`sf` pulls `libgdal-dev`, which does not ship it) and skipping
+  would leave the fix with **no coverage at all** there. Verified that the choice is
+  load-bearing: with GDAL absent, removing `shQuote()` still gives FAIL 2 and ignoring
+  `vsi` still gives FAIL 3, so the mock twins genuinely guard the fix on those runners.
+
 Closed by: PR #25 (branch `23-spk-source-url-vsi-streaming`)
