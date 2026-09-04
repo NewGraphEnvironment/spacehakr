@@ -92,13 +92,13 @@ entire query string, and `file_path_sans_ext()` leaves it intact. The derived la
 
 ## Phase 4: Documentation
 
-- [ ] `@param vsi` — what each value means and *when* to reach for streaming: a service
+- [x] `@param vsi` — what each value means and *when* to reach for streaming: a service
       endpoint with a query string, a source with no extension, a `no-store` cache header
-- [ ] Amend the description and `@details`, which currently state `/vsicurl/` as the only
+- [x] Amend the description and `@details`, which currently state `/vsicurl/` as the only
       streaming path (`R/spk_source_url.R:6`, `:28`)
-- [ ] A runnable-shaped `\dontrun{}` example using a WFS endpoint with `layer` supplied
-- [ ] `devtools::document()`, reading its output for unexpected `.Rd` writes
-- [ ] `NEWS.md` entry under a new `# spacehakr 0.3.0.9000` heading. Version bump and tag
+- [x] A runnable-shaped `\dontrun{}` example using a WFS endpoint with `layer` supplied
+- [x] `devtools::document()`, reading its output for unexpected `.Rd` writes
+- [x] `NEWS.md` entry under a new `# spacehakr 0.3.0.9000` heading. Version bump and tag
       are `/gh-pr-merge`'s release bookkeeping, not this branch.
 
 ## Phase 5: Verification
@@ -128,17 +128,30 @@ entire query string, and `file_path_sans_ext()` leaves it intact. The derived la
       | encoding/`vsi` mutual exclusion removed | FAIL 3 |
       | restored | PASS 55 |
 
-- [ ] `Rscript -e 'devtools::test()' 2>&1 | grep -E "(FAIL|ERROR|PASS)" | tail -5`
-- [ ] `lintr::lint_package()` — diff against the `HEAD` baseline for the touched file
+- [x] `Rscript -e 'devtools::test()' 2>&1 | grep -E "(FAIL|ERROR|PASS)" | tail -5`
+- [x] `lintr::lint_package()` — diff against the `HEAD` baseline for the touched file
       rather than reading the raw count
-- [ ] `devtools::check(vignettes = FALSE)` — expect the pre-existing `spk_odm.Rd` line-width
+- [x] `devtools::check(vignettes = FALSE)` — expect the pre-existing `spk_odm.Rd` line-width
       note and nothing new
-- [ ] `/code-check` on each staged diff before committing
+- [x] `/code-check` on the staged diff (2 rounds: 4 findings fixed, then clean)
 
 ## Validation
 
-- [ ] Tests pass
-- [ ] `/code-check` clean on each commit
-- [ ] PWF checkboxes match landed work
+- [x] Tests pass
+- [x] `/code-check` clean
+- [x] PWF checkboxes match landed work
 - [ ] `/planning-archive` on completion, README carrying the Measurement and Evidence
       sections
+
+## Unplanned work that verification forced
+
+- [x] **`system2()` shell-quoting.** The live end-to-end check found `spk_source_url()`
+      silently returning success and writing nothing for any URL containing `&` — every
+      service endpoint, which is the whole point of this issue. `system2()` runs its
+      arguments through `sh`; the URL split at each `&` and the trailing `count=1` was a
+      successful variable assignment, so status was 0. Fixed by quoting at the invocation
+      boundary. This also restores `query`, whose `shQuote()` was removed in 0.3.0 on
+      reasoning that measurement contradicts. Fault-injected: FAIL 2.
+- [x] **Multi-URL temp-file leak.** `on.exit()` registered inside the loop late-binds to
+      the last `source`; 2 of 3 temp files leaked. Raised by the plan review, confirmed by
+      measurement, fixed and pinned. Fault-injected: FAIL 1.

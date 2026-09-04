@@ -3,9 +3,9 @@
 #' Downloads files from URLs and converts each into a layer within a GeoPackage
 #' using the `ogr2ogr` command-line tool from GDAL.
 #'
-#' Sources are read through GDAL's `/vsicurl/` virtual filesystem, so anything
-#' `ogr2ogr` can open over HTTP works — FlatGeobuf, GeoJSON, GeoPackage, shapefile
-#' archives and plain CSV among them.
+#' Sources are read through a GDAL virtual filesystem, so anything `ogr2ogr` can open
+#' over HTTP works — FlatGeobuf, GeoJSON, GeoPackage, shapefile archives and plain CSV
+#' among them. Which filesystem is used is chosen with `vsi`.
 #'
 #' @details
 #' A non-spatial CSV carrying coordinate columns becomes a point layer by passing the
@@ -25,7 +25,9 @@
 #'
 #' GDAL's CSV driver has no general encoding open option, so a source that is not UTF-8
 #' cannot be fixed with `open_options`. Pass `encoding` instead and the file is fetched
-#' and re-encoded before `ogr2ogr` sees it, rather than streamed through `/vsicurl/`.
+#' and re-encoded before `ogr2ogr` sees it, rather than streamed through a virtual
+#' filesystem. Because that path never reaches one, `encoding` and a non-default `vsi`
+#' are refused together.
 #'
 #' Canadian federal open data often ships bilingual, slash-separated column headers —
 #' `Site/Site`, `Year/Année`. Verified against GDAL 3.x: both the slash and the accent
@@ -37,6 +39,37 @@
 #' (`Site.Site`) while the accent is kept (`Year.Année`). So the name in the file and the
 #' name in your session differ, and a downstream SQL `query` against this layer must use
 #' the *file's* name, quoted.
+#'
+#' # Reading a service endpoint
+#'
+#' `/vsicurl/` — the default — probes a source with a `HEAD` request and reads it with
+#' HTTP range requests. A **service endpoint addressed by a query string** typically
+#' supports neither, and the open fails before any driver is tried:
+#'
+#' ```
+#' ERROR 1: Unable to open datasource `/vsicurl/https://...' with the following drivers.
+#' ```
+#'
+#' Measured against a BC Geographic Warehouse WFS on GDAL 3.13.0: `HEAD` returns 404, and
+#' a `Range` request is answered with a full-body 200 rather than a 206. Forcing the
+#' driver (`-if GeoJSON`, `GeoJSON:/vsicurl/...`) does not help, because the failure is in
+#' the probe rather than in driver detection.
+#'
+#' `vsi = "curl_streaming"` reads the source with a single sequential `GET` and needs
+#' neither capability. Reach for it when a URL carries a query string, has no file
+#' extension, or names an OGC service.
+#'
+#' `"curl_streaming"` is not strictly better, so it is not the default. It reads
+#' sequentially and does not cache, so a format that needs to seek — a GeoPackage or
+#' zipped shapefile over HTTP, a FlatGeobuf spatial index — will re-request or degrade
+#' badly under it. Use it for a sequentially-readable payload (GeoJSON, CSV) from an
+#' endpoint `/vsicurl/` cannot probe, and leave the default in place otherwise.
+#'
+#' A query-string URL also has no usable file name — `basename()` of a `GetFeature`
+#' request returns the whole query string — so `layer` is required in that case. That
+#' guard covers the query-string shape only; other URLs still derive a name that may be
+#' poor (`https://example.com` yields `example`), so pass `layer` whenever the name
+#' matters.
 #'
 #' @param path_gpkg [character] Path to the output GeoPackage. Created if it does not
 #'   exist; its parent directory must exist.
@@ -52,11 +85,19 @@
 #'   none, e.g. `"EPSG:4326"`.
 #' @param t_srs [character] or [NULL] Optional CRS to *reproject* the source to.
 #' @param encoding [character] or [NULL] Optional source encoding, e.g. `"UTF-16LE"`.
-#'   When supplied the file is fetched and re-encoded to UTF-8 before conversion.
+#'   When supplied the file is fetched and re-encoded to UTF-8 before conversion. Cannot
+#'   be combined with a non-default `vsi`.
+#' @param vsi [character] GDAL virtual filesystem used to read each URL. `"curl"`
+#'   (default) reads through `/vsicurl/`, which probes with `HEAD` and reads with range
+#'   requests. `"curl_streaming"` reads through `/vsicurl_streaming/`, a single sequential
+#'   `GET` — required for a service endpoint that supports neither, such as a WFS
+#'   `GetFeature` URL. See *Reading a service endpoint* below.
 #'
 #' @return Invisible `NULL`. Called for its side effects.
 #'
-#' @seealso [spk_geoserv_dlv()] for pulling a layer from a GeoServer WFS endpoint.
+#' @seealso [spk_geoserv_dlv()] for pulling a layer from a GeoServer WFS endpoint. It
+#'   builds the request from parts and writes a GeoJSON file to a directory; this
+#'   function takes an already-built URL straight into a GeoPackage layer.
 #'
 #' @examples
 #' \dontrun{
@@ -74,6 +115,21 @@
 #'   ),
 #'   a_srs = "EPSG:4326",
 #'   encoding = "UTF-16LE"
+#' )
+#'
+#' # a WFS GetFeature endpoint: /vsicurl/ cannot open this, and the query string leaves
+#' # no usable name to derive, so `layer` is required
+#' lyr <- "WHSE_BASEMAPPING.FWA_WATERSHED_GROUPS_POLY"
+#' spk_source_url(
+#'   path_gpkg = path_gpkg,
+#'   urls = paste0(
+#'     "https://openmaps.gov.bc.ca/geo/pub/", lyr, "/ows",
+#'     "?service=WFS&version=2.0.0&request=GetFeature",
+#'     "&typeName=pub%3A", lyr,
+#'     "&outputFormat=application%2Fjson&srsName=EPSG%3A3005&count=1"
+#'   ),
+#'   layer = "watershed_groups",
+#'   vsi = "curl_streaming"
 #' )
 #' }
 #'
@@ -152,6 +208,14 @@ spk_source_url <- function(path_gpkg,
     cli::cli_abort("`ogr2ogr` is not on the PATH. Please install GDAL.")
   }
 
+  # `on.exit()` stores an unevaluated expression evaluated in this frame at exit, so a
+  # registration made inside the loop resolves to whatever `source` holds at the *end*.
+  # Measured: three URLs unlinked the third temp file three times and leaked the first
+  # two. Registering once over an accumulating vector uses that same late binding
+  # correctly -- at exit it sees every path.
+  tmp_files <- character(0)
+  on.exit(unlink(tmp_files), add = TRUE)
+
   for (i in seq_along(urls)) {
     url <- urls[[i]]
     source <- .spk_source_resolve(url, encoding, vsi)
@@ -159,7 +223,7 @@ spk_source_url <- function(path_gpkg,
     # the resolver runs. Inferring it by reconstructing the resolver's return value
     # instead would register a cleanup against a virtual path the moment `vsi` moves.
     if (!is.null(encoding)) {
-      on.exit(unlink(source), add = TRUE)
+      tmp_files <- c(tmp_files, source)
     }
 
     args <- .spk_source_url_args(
@@ -185,6 +249,16 @@ spk_source_url <- function(path_gpkg,
 #' that was never created, so it is captured rather than discarded, and `stderr` goes to
 #' a file so the diagnostic survives to be reported.
 #'
+#' `system2()` pastes its `args` into a command string and runs it through `sh`, quoting
+#' only the command itself. Measured: `system2("echo", args = "a&b")` prints `a` and
+#' reports `sh: b: command not found`. So every argument is subject to shell parsing, and
+#' the two arguments that routinely carry metacharacters both broke — a query-string URL
+#' split at each `&`, leaving a trailing `count=1` that `sh` read as a successful variable
+#' assignment, so the command reported **status 0 having written nothing**; and a `-where`
+#' clause containing quotes and spaces died with a shell syntax error. Quoting happens
+#' here rather than in `.spk_source_url_args()` so the argument vector stays comparable by
+#' equality in tests.
+#'
 #' @param args [character] Argument vector, excluding the command itself.
 #' @param url [character] Source URL, used only to name the failure.
 #'
@@ -196,7 +270,7 @@ spk_source_url <- function(path_gpkg,
   err <- tempfile(fileext = ".txt")
   on.exit(unlink(err), add = TRUE)
 
-  status <- system2("ogr2ogr", args = args, stdout = FALSE, stderr = err)
+  status <- system2("ogr2ogr", args = shQuote(args), stdout = FALSE, stderr = err)
 
   if (!identical(as.integer(status), 0L)) {
     cli::cli_abort("ogr2ogr failed for {.url {url}} (status {status}):\n{stderr_tail(err)}")
@@ -226,15 +300,18 @@ stderr_tail <- function(path) {
 
 #' Resolve a URL to something ogr2ogr can open
 #'
-#' Internal. Returns a `/vsicurl/` path for the streaming case, or a local temp file
+#' Internal. Returns a `/vsi<vsi>/` path for the streaming case, or a local temp file
 #' re-encoded to UTF-8 when `encoding` is supplied — GDAL's CSV driver has no general
 #' encoding open option, so a non-UTF-8 source cannot be handled in place.
 #'
+#' `vsi` is validated by the caller, so this pastes it without re-checking.
+#'
 #' @param url [character] A single source URL.
 #' @param encoding [character] or [NULL] Source encoding.
+#' @param vsi [character] Virtual filesystem suffix, `"curl"` or `"curl_streaming"`.
 #'
-#' @return [character] A `/vsicurl/` path, or the path of a temp file the caller must
-#'   clean up.
+#' @return [character] A virtual filesystem path, or the path of a temp file the caller
+#'   must clean up.
 #'
 #' @noRd
 #' @importFrom httr2 request req_perform
@@ -280,7 +357,7 @@ stderr_tail <- function(path) {
 #' [spk_gdalwarp()].
 #'
 #' @param path_gpkg [character] Path to the output GeoPackage.
-#' @param source [character] Resolved source — a `/vsicurl/` path or a local file.
+#' @param source [character] Resolved source — a virtual filesystem path or a local file.
 #' @param layer [character] Output layer name.
 #' @param query [character] or [NULL] Optional SQL filter.
 #' @param open_options [character] or [NULL] Optional `KEY=VALUE` open options.
@@ -308,8 +385,8 @@ stderr_tail <- function(path) {
     if (!is.null(open_options)) c(rbind("-oo", open_options)),
     if (!is.null(a_srs)) c("-a_srs", a_srs),
     if (!is.null(t_srs)) c("-t_srs", t_srs),
-    # No shQuote: system2() with an args vector does not go through a shell, so quoting
-    # here would reach -where literally.
+    # Unquoted here by design: `.spk_ogr2ogr()` quotes the whole vector at the point of
+    # invocation, which keeps this builder comparable by equality in tests.
     if (!is.null(query)) c("-where", query),
     source
   )

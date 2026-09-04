@@ -10,6 +10,14 @@ skip_no_ogr <- function() {
   testthat::skip_if(!nzchar(Sys.which("ogr2ogr")), "ogr2ogr CLI not on PATH")
 }
 
+# The round-trip tests below prove that arguments survive `sh` parsing. The check matrix
+# includes windows-latest, where `shQuote()` defaults to type = "cmd" and `printf` is not
+# a command at all -- and system2() on a missing command errors rather than skipping.
+skip_no_sh <- function() {
+  testthat::skip_on_os("windows")
+  testthat::skip_if(!nzchar(Sys.which("printf")), "printf not on PATH")
+}
+
 # file(open = "wb", encoding = ) does NOT re-encode on write — it writes the bytes it is
 # given. Converting explicitly is the only way to get a genuine UTF-16LE fixture, and a
 # fixture that is secretly ASCII cannot reach the failure mode under test.
@@ -138,8 +146,10 @@ testthat::test_that(".spk_source_url_args keeps a_srs and t_srs distinct", {
 testthat::test_that(".spk_source_url_args passes query to -where unquoted", {
   q <- "watershed_group_code in ('ADMS')"
   args <- .spk_source_url_args("g.gpkg", "src", "l", query = q)
-  # system2() with an args vector does not go through a shell, so shQuote()ing here
-  # would reach ogr2ogr literally
+  # Unquoted in the builder by design. system2() DOES run its args through `sh` -- the
+  # comment here previously claimed the opposite, which is the reasoning that removed
+  # shQuote() in 0.3.0 and broke -where. Quoting happens in .spk_ogr2ogr() instead, so
+  # this vector stays comparable by equality.
   testthat::expect_equal(args[which(args == "-where") + 1L], q)
 })
 
@@ -162,6 +172,88 @@ testthat::test_that(".spk_ogr2ogr aborts naming the URL and the stderr tail", {
     f(c("-f", "GPKG"), "https://example.com/missing.csv"),
     "unable to open"
   )
+})
+
+testthat::test_that(".spk_ogr2ogr shell-quotes every argument", {
+  # system2() pastes args into a command string run through sh, quoting only the command.
+  # Measured: system2("echo", args = "a&b") prints "a" and reports `sh: b: command not
+  # found`. A query-string URL was therefore split at each `&`, and the trailing
+  # `count=1` was read by sh as a successful variable assignment -- so ogr2ogr reported
+  # status 0 having written no file. Silent failure, on the exact URL shape `vsi` exists
+  # to support.
+  testthat::skip_if_not_installed("mockery")
+
+  seen <- NULL
+  f <- .spk_ogr2ogr
+  mockery::stub(f, "system2", function(command, args, ...) {
+    seen <<- args
+    0L
+  })
+
+  url <- "https://example.com/ows?service=WFS&count=1"
+  f(c("-f", "GPKG", "out.gpkg", "-where", "code in ('ADMS')", paste0("/vsicurl_streaming/", url)), url)
+
+  # The property is not which quoting style shQuote picked -- it uses single quotes
+  # normally and switches the whole vector to double quotes, escaping `$` and backticks,
+  # as soon as any element contains a single quote. The property is that every argument
+  # survives shell parsing byte-identical. Proved by round-tripping through `printf`,
+  # which needs no GDAL.
+  raw <- c("-f", "GPKG", "out.gpkg", "-where", "code in ('ADMS')",
+           paste0("/vsicurl_streaming/", url))
+  # Platform-independent, so the windows runner covers the fix too: there shQuote()
+  # defaults to cmd quoting, which an sh round-trip could not validate.
+  testthat::expect_equal(seen, shQuote(raw))
+
+  # And the property itself -- the arguments survive shell parsing byte-identical --
+  # proved by round-tripping through printf where there is an sh to do it.
+  skip_no_sh()
+  round_tripped <- system2("printf", c(shQuote("%s\n", type = "sh"), seen), stdout = TRUE)
+  testthat::expect_equal(round_tripped, raw)
+})
+
+testthat::test_that("premise: shQuote survives shell metacharacters", {
+  # A PREMISE about base R, not coverage of the fix -- it calls no package function and
+  # stays green if shQuote() is removed from .spk_ogr2ogr(). The guard on the fix is
+  # ".spk_ogr2ogr shell-quotes every argument" above. Kept because it is the assumption
+  # the fix rests on: a URL may carry $ and backticks, a -where clause carries single
+  # quotes, and a string holding both is what would break a naive double-quoting.
+  skip_no_sh()
+  nasty <- c("u?a=1&b=$HOME&c=`id`", "name = 'a$b'", "plain")
+  testthat::expect_equal(
+    system2("printf", c(shQuote("%s\n", type = "sh"), shQuote(nasty, type = "sh")),
+            stdout = TRUE),
+    nasty
+  )
+})
+
+testthat::test_that("an ampersand in a source URL does not silently succeed", {
+  # the end-to-end version of the above, against a local file whose name carries a shell
+  # metacharacter -- no network, but the same parsing path
+  skip_no_ogr()
+  testthat::skip_if_not_installed("sf")
+
+  dir <- file.path(tempdir(), "spk-shell-test")
+  dir.create(dir, showWarnings = FALSE)
+  src <- file.path(dir, "a&b c.csv")
+  writeLines(c("code,Longitude,Latitude", "ADMS,-127.1,54.2", "BULK,-126.9,54.4"), src)
+  on.exit(unlink(dir, recursive = TRUE), add = TRUE)
+
+  gpkg <- tempfile(fileext = ".gpkg")
+  on.exit(unlink(gpkg), add = TRUE)
+
+  args <- .spk_source_url_args(
+    path_gpkg = gpkg, source = src, layer = "t",
+    query = "code in ('ADMS')",
+    open_options = c("X_POSSIBLE_NAMES=Longitude", "Y_POSSIBLE_NAMES=Latitude"),
+    a_srs = "EPSG:4326", update = FALSE
+  )
+  .spk_ogr2ogr(args, src)
+
+  testthat::expect_true(file.exists(gpkg))
+  got <- sf::st_read(gpkg, layer = "t", quiet = TRUE)
+  # -where actually filtered: 1 of 2 rows. Unquoted this died with a shell syntax error.
+  testthat::expect_equal(nrow(got), 1L)
+  testthat::expect_equal(got$code, "ADMS")
 })
 
 testthat::test_that(".spk_ogr2ogr is silent on success", {
@@ -303,6 +395,40 @@ testthat::test_that("spk_source_url allows encoding with the default vsi", {
     )
   )
   testthat::expect_equal(seen[[length(seen)]], local)
+})
+
+testthat::test_that("every temp file is cleaned up, not just the last", {
+  # on.exit() registered inside the loop stores an unevaluated expression, so all three
+  # registrations resolved to the LAST value of `source`: the third temp file was
+  # unlinked three times and the first two leaked for the life of the session. Measured
+  # at 2 of 3 surviving before the fix.
+  testthat::skip_if_not_installed("mockery")
+
+  gpkg <- file.path(tempdir(), "layers.gpkg")
+  made <- character(0)
+
+  f <- spk_source_url
+  mockery::stub(f, ".spk_source_resolve", function(...) {
+    p <- tempfile(fileext = ".csv")
+    writeLines("Site,Longitude,Latitude", p)
+    made <<- c(made, p)
+    p
+  })
+  mockery::stub(f, ".spk_ogr2ogr", function(...) invisible(NULL))
+
+  f(
+    path_gpkg = gpkg,
+    urls = c(
+      "https://example.com/a.csv",
+      "https://example.com/b.csv",
+      "https://example.com/c.csv"
+    ),
+    layer = c("a", "b", "c"),
+    encoding = "UTF-16LE"
+  )
+
+  testthat::expect_length(made, 3L)
+  testthat::expect_equal(sum(file.exists(made)), 0L)
 })
 
 testthat::test_that("an encoded source still registers its temp file for cleanup", {

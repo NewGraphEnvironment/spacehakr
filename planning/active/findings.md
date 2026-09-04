@@ -121,3 +121,60 @@ basename(u)
 
 This is not hypothetical and it is created by the feature being added, which is why the
 Phase 3 guard is in scope rather than deferred.
+
+## `system2()` does go through a shell — found by the live end-to-end check
+
+The unit tests, the argument-builder tests and the raw `ogr2ogr` controls all passed while
+`spk_source_url()` was **silently broken for the exact URL shape this issue is about**.
+Running the finished function against the live endpoint is what exposed it:
+
+```
+default vsi   -> "returned normally", and the GeoPackage did not exist
+```
+
+`system2(command, args)` pastes `args` into a command string and runs it through `sh`,
+shell-quoting only `command`. Measured:
+
+```r
+system2("echo", args = "a&b")
+#> a
+#> sh: b: command not found
+```
+
+So a WFS URL is split at every `&`. The fragments run as separate commands, and the last
+one — `count=1` — is a variable assignment, which succeeds. `system2()` returns **0**, the
+abort added in 0.3.0 never fires, and no file is written.
+
+| case | status | file written | rows |
+|---|---|---|---|
+| `-where` raw (0.3.0 behaviour) | 2 | no | — |
+| `-where` shell-quoted | 0 | yes | 1 |
+| URL with `&` raw | **0** | **no** | — |
+| URL with `&` shell-quoted | 0 | yes | 1 |
+
+Two things follow.
+
+**The v0.3.0 conclusion was wrong.** Its archive README records removing `shQuote(query)`
+because "`system2()` with an argument vector does not go through a shell, so the quotes
+were reaching `-where` literally". The comment asserting this sat in the code and was
+carried into a test name. `-where` has been broken since — loudly, so it was survivable,
+but the reasoning was inverted.
+
+**`shQuote()` is safe here, measured rather than assumed.** It single-quotes normally and
+switches the whole vector to double-quoting as soon as any element contains a single
+quote, escaping `$` and backticks in that branch. A string carrying a single quote, `$`
+and a backtick at once round-trips byte-identical. The test asserts that round-trip rather
+than a quoting style, because the style is an implementation detail and the survival of
+the bytes is the property.
+
+Quoting is applied in `.spk_ogr2ogr()` rather than in `.spk_source_url_args()`, so the
+argument vector stays comparable by equality in tests.
+
+## Live end-to-end, after the fix
+
+```
+default vsi        -> aborted: ogr2ogr failed for <url>
+vsi=curl_streaming -> layer "watershed_groups", 1 feature, EPSG 3005, MULTIPOLYGON,
+                      0 empty geometries
+layer omitted      -> aborted: `layer` is required when a URL carries a query string.
+```

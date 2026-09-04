@@ -22,3 +22,12 @@
   It partial-matched a typo through to a live network call, and its message names neither
   the argument nor the value.
 - Next: Phase 4 documentation and NEWS.
+- Live end-to-end check found `spk_source_url()` silently succeeding on any URL with `&`
+  — `system2()` runs args through `sh`. Fixed with `shQuote()` at the invocation boundary.
+  This also showed v0.3.0's removal of `shQuote(query)` rested on inverted reasoning.
+- Plan review + two `/code-check` rounds. Round 1: four findings, all real, all fixed
+  (windows-runner `printf` tests, a surviving stale comment, an `@details` heading that
+  swallowed unrelated prose, a mislabelled premise test). Round 2: clean.
+- Issue #23 body corrected — it attributed the failure to a `cache-control` header the
+  endpoint does not send; the measured cause is a 404 on HEAD and an ignored `Range`.
+- Final: suite FAIL 0 | PASS 196, lint 0, check 1 pre-existing NOTE.
