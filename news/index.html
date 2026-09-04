@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">spacehakr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,18 @@
       <small>Source: <a href="https://github.com/NewGraphEnvironment/spacehakr/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0.9000" id="spacehakr-0309000-development">spacehakr 0.3.0.9000 (development)<a class="anchor" aria-label="anchor" href="#spacehakr-0309000-development"></a></h2>
+<ul><li>
+<p><strong>[spk_source_url()] silently failed on any URL containing <code>&amp;</code>, which is every service endpoint.</strong> <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2()</a></code> pastes its arguments into a command string and runs it through <code>sh</code>, quoting only the command itself — measured: <code>system2("echo", args = "a&amp;b")</code> prints <code>a</code> and reports <code>sh: b: command not found</code>. A query-string URL was therefore split at each <code>&amp;</code>, and the trailing <code>count=1</code> was read by <code>sh</code> as a successful variable assignment, so <code>ogr2ogr</code> reported <strong>status 0 having written nothing</strong>. Arguments are now shell-quoted at the point of invocation.</p>
+<p>The same gap was a <strong>command-injection</strong> vector, not only a correctness bug: a <code>;</code>, backtick or <code>$()</code> reaching <code>sh</code> inside a caller-supplied <code>urls</code> or <code>query</code> value would have executed. That matters wherever these values come from a config file or a layer catalog rather than from a literal in the calling script.</p>
+<p>This also restores <code>query</code>. The 0.3.0 note below says <code><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote()</a></code> was removed because <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2()</a></code> “does not go through a shell”; that is not correct, and a <code>-where</code> clause containing quotes and spaces has been dying with a shell syntax error (loudly, at least) ever since. A caller who worked around it by pre-quoting their query should remove that quoting.</p>
+</li>
+<li><p>[spk_source_url()] gains <code>vsi</code>, choosing the GDAL virtual filesystem each URL is read through. <code>/vsicurl/</code> — still the default, so nothing changes for existing callers — probes a source with a <code>HEAD</code> request and reads it with HTTP range requests, which a service endpoint addressed by a query string typically supports neither of. Measured against a BC Geographic Warehouse WFS on GDAL 3.13.0: <code>HEAD</code> returns 404 and a <code>Range</code> request is answered with a full-body 200, so the open fails before any driver is tried, and forcing the driver does not help. <code>vsi = "curl_streaming"</code> reads with a single sequential <code>GET</code> and works. Until now the only way to avoid <code>/vsicurl/</code> was to supply an <code>encoding</code>, which is a statement about a source’s character set rather than its transport — so a WFS endpoint could not be expressed at all.</p></li>
+<li><p><strong>Behaviour change:</strong> [spk_source_url()] now requires <code>layer</code> when a URL carries a query string. The derived name was <code>tools::file_path_sans_ext(basename(url))</code>, which for a WFS <code>GetFeature</code> request is the entire query string. A caller who relied on the derived name for a query-string URL — a presigned object URL, say — must now pass <code>layer</code> explicitly.</p></li>
+<li><p>[spk_source_url()] no longer leaks temp files when given several URLs with an <code>encoding</code>. <code><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit()</a></code> was registered inside the loop, so all registrations resolved to the last value of the source path: the final temp file was unlinked once per URL and every earlier one survived for the life of the session. Measured at 2 of 3 leaked.</p></li>
+<li><p>[spk_source_url()] refuses <code>encoding</code> combined with a non-default <code>vsi</code>. An encoded source is downloaded and re-encoded before conversion, so it never reaches a virtual filesystem, and honouring one argument while silently dropping the other is what made <code>encoding</code> usable as a transport switch in the first place.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="spacehakr-030">spacehakr 0.3.0<a class="anchor" aria-label="anchor" href="#spacehakr-030"></a></h2>
 <ul><li><p>[spk_source_url()] now fails loudly. The <code>ogr2ogr</code> exit status was never checked, so a bad URL, a 404 or an unreadable source returned exactly what success returned, and a layer that was never written looked identical to one that was. <code>stderr</code> now goes to a file rather than being merged into a discarded value, and a non-zero status aborts naming the URL and the tail of the diagnostic.</p></li>
