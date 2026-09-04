@@ -1,6 +1,6 @@
 # Changelog
 
-## spacehakr 0.3.0.9000 (development)
+## spacehakr 0.4.0
 
 - **\[spk_source_url()\] silently failed on any URL containing `&`,
   which is every service endpoint.**

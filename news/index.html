@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">spacehakr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.0.9000" id="spacehakr-0309000-development">spacehakr 0.3.0.9000 (development)<a class="anchor" aria-label="anchor" href="#spacehakr-0309000-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="spacehakr-040">spacehakr 0.4.0<a class="anchor" aria-label="anchor" href="#spacehakr-040"></a></h2>
 <ul><li>
 <p><strong>[spk_source_url()] silently failed on any URL containing <code>&amp;</code>, which is every service endpoint.</strong> <code><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2()</a></code> pastes its arguments into a command string and runs it through <code>sh</code>, quoting only the command itself — measured: <code>system2("echo", args = "a&amp;b")</code> prints <code>a</code> and reports <code>sh: b: command not found</code>. A query-string URL was therefore split at each <code>&amp;</code>, and the trailing <code>count=1</code> was read by <code>sh</code> as a successful variable assignment, so <code>ogr2ogr</code> reported <strong>status 0 having written nothing</strong>. Arguments are now shell-quoted at the point of invocation.</p>
 <p>The same gap was a <strong>command-injection</strong> vector, not only a correctness bug: a <code>;</code>, backtick or <code>$()</code> reaching <code>sh</code> inside a caller-supplied <code>urls</code> or <code>query</code> value would have executed. That matters wherever these values come from a config file or a layer catalog rather than from a literal in the calling script.</p>
