@@ -12,7 +12,8 @@ spk_source_url(
   open_options = NULL,
   a_srs = NULL,
   t_srs = NULL,
-  encoding = NULL
+  encoding = NULL,
+  vsi = "curl"
 )
 }
 \arguments{
@@ -37,7 +38,14 @@ none, e.g. \code{"EPSG:4326"}.}
 \item{t_srs}{\link{character} or \link{NULL} Optional CRS to \emph{reproject} the source to.}
 
 \item{encoding}{\link{character} or \link{NULL} Optional source encoding, e.g. \code{"UTF-16LE"}.
-When supplied the file is fetched and re-encoded to UTF-8 before conversion.}
+When supplied the file is fetched and re-encoded to UTF-8 before conversion. Cannot
+be combined with a non-default \code{vsi}.}
+
+\item{vsi}{\link{character} GDAL virtual filesystem used to read each URL. \code{"curl"}
+(default) reads through \verb{/vsicurl/}, which probes with \code{HEAD} and reads with range
+requests. \code{"curl_streaming"} reads through \verb{/vsicurl_streaming/}, a single sequential
+\code{GET} — required for a service endpoint that supports neither, such as a WFS
+\code{GetFeature} URL. See \emph{Reading a service endpoint} below.}
 }
 \value{
 Invisible \code{NULL}. Called for its side effects.
@@ -47,9 +55,9 @@ Downloads files from URLs and converts each into a layer within a GeoPackage
 using the \code{ogr2ogr} command-line tool from GDAL.
 }
 \details{
-Sources are read through GDAL's \verb{/vsicurl/} virtual filesystem, so anything
-\code{ogr2ogr} can open over HTTP works — FlatGeobuf, GeoJSON, GeoPackage, shapefile
-archives and plain CSV among them.
+Sources are read through a GDAL virtual filesystem, so anything \code{ogr2ogr} can open
+over HTTP works — FlatGeobuf, GeoJSON, GeoPackage, shapefile archives and plain CSV
+among them. Which filesystem is used is chosen with \code{vsi}.
 
 A non-spatial CSV carrying coordinate columns becomes a point layer by passing the
 relevant GDAL open options and assigning a CRS:
@@ -67,7 +75,9 @@ that already has one. They are not interchangeable.
 
 GDAL's CSV driver has no general encoding open option, so a source that is not UTF-8
 cannot be fixed with \code{open_options}. Pass \code{encoding} instead and the file is fetched
-and re-encoded before \code{ogr2ogr} sees it, rather than streamed through \verb{/vsicurl/}.
+and re-encoded before \code{ogr2ogr} sees it, rather than streamed through a virtual
+filesystem. Because that path never reaches one, \code{encoding} and a non-default \code{vsi}
+are refused together.
 
 Canadian federal open data often ships bilingual, slash-separated column headers —
 \code{Site/Site}, \code{Year/Année}. Verified against GDAL 3.x: both the slash and the accent
@@ -80,6 +90,36 @@ data frame, and R makes column names syntactic — the slash becomes a dot
 name in your session differ, and a downstream SQL \code{query} against this layer must use
 the \emph{file's} name, quoted.
 }
+\section{Reading a service endpoint}{
+\verb{/vsicurl/} — the default — probes a source with a \code{HEAD} request and reads it with
+HTTP range requests. A \strong{service endpoint addressed by a query string} typically
+supports neither, and the open fails before any driver is tried:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ERROR 1: Unable to open datasource `/vsicurl/https://...' with the following drivers.
+}\if{html}{\out{</div>}}
+
+Measured against a BC Geographic Warehouse WFS on GDAL 3.13.0: \code{HEAD} returns 404, and
+a \code{Range} request is answered with a full-body 200 rather than a 206. Forcing the
+driver (\verb{-if GeoJSON}, \verb{GeoJSON:/vsicurl/...}) does not help, because the failure is in
+the probe rather than in driver detection.
+
+\code{vsi = "curl_streaming"} reads the source with a single sequential \code{GET} and needs
+neither capability. Reach for it when a URL carries a query string, has no file
+extension, or names an OGC service.
+
+\code{"curl_streaming"} is not strictly better, so it is not the default. It reads
+sequentially and does not cache, so a format that needs to seek — a GeoPackage or
+zipped shapefile over HTTP, a FlatGeobuf spatial index — will re-request or degrade
+badly under it. Use it for a sequentially-readable payload (GeoJSON, CSV) from an
+endpoint \verb{/vsicurl/} cannot probe, and leave the default in place otherwise.
+
+A query-string URL also has no usable file name — \code{basename()} of a \code{GetFeature}
+request returns the whole query string — so \code{layer} is required in that case. That
+guard covers the query-string shape only; other URLs still derive a name that may be
+poor (\verb{https://example.com} yields \code{example}), so pass \code{layer} whenever the name
+matters.
+}
+
 \examples{
 \dontrun{
 path_gpkg <- fs::path(tempdir(), "layers.gpkg")
@@ -97,11 +137,28 @@ spk_source_url(
   a_srs = "EPSG:4326",
   encoding = "UTF-16LE"
 )
+
+# a WFS GetFeature endpoint: /vsicurl/ cannot open this, and the query string leaves
+# no usable name to derive, so `layer` is required
+lyr <- "WHSE_BASEMAPPING.FWA_WATERSHED_GROUPS_POLY"
+spk_source_url(
+  path_gpkg = path_gpkg,
+  urls = paste0(
+    "https://openmaps.gov.bc.ca/geo/pub/", lyr, "/ows",
+    "?service=WFS&version=2.0.0&request=GetFeature",
+    "&typeName=pub\%3A", lyr,
+    "&outputFormat=application\%2Fjson&srsName=EPSG\%3A3005&count=1"
+  ),
+  layer = "watershed_groups",
+  vsi = "curl_streaming"
+)
 }
 
 }
 \seealso{
-\code{\link[=spk_geoserv_dlv]{spk_geoserv_dlv()}} for pulling a layer from a GeoServer WFS endpoint.
+\code{\link[=spk_geoserv_dlv]{spk_geoserv_dlv()}} for pulling a layer from a GeoServer WFS endpoint. It
+builds the request from parts and writes a GeoJSON file to a directory; this
+function takes an already-built URL straight into a GeoPackage layer.
 
 Other download: 
 \code{\link{spk_source_bcdata}()}
