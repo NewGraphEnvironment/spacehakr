@@ -161,6 +161,8 @@ collections_df |>
 | naip | no | 2010-01-01 | 2023-12-31 | NAIP: National Agriculture Imagery Program: NAIP, Aerial, Imagery, USDA, AFPO, Agriculture, United States |
 | nasa-nex-gddp-cmip6 | yes | 1950-01-01 | 2100-12-31 | Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6): CMIP6, NASA, Climate, Humidity, Precipitation, Temperature |
 | nasadem | yes | 2000-02-20 | 2000-02-20 | NASADEM HGT v001: NASA, JPL, Elevation, DEM, USGS, NGA, SRTM |
+| nested-eagle-conus | yes | 2024-10-01 | NA | NOAA Nested-EAGLE (CONUS): weather, forecast, AI, NOAA, EAGLE, HRRR, GFS, CONUS, global |
+| nested-eagle-global | yes | 2024-10-01 | NA | NOAA Nested-EAGLE (Global): weather, forecast, AI, NOAA, EAGLE, HRRR, GFS, CONUS, global |
 | noaa-c-cap | no | 1975-01-01 | 2016-12-31 | C-CAP Regional Land Cover and Change: Land Cover, Land Use, NOAA, Coastal |
 | noaa-cdr-ocean-heat-content | yes | 1972-03-01 | 2022-03-31 | Global Ocean Heat Content CDR: Global, Climate, NOAA, Temperature, Ocean |
 | noaa-cdr-ocean-heat-content-netcdf | yes | 1972-03-01 | 2022-03-31 | Global Ocean Heat Content CDR NetCDFs: Global, Climate, NOAA, Temperature, Ocean |

@@ -161,6 +161,8 @@ collections_df |>
 | naip | no | 2010-01-01 | 2023-12-31 | NAIP: National Agriculture Imagery Program: NAIP, Aerial, Imagery, USDA, AFPO, Agriculture, United States |
 | nasa-nex-gddp-cmip6 | yes | 1950-01-01 | 2100-12-31 | Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6): CMIP6, NASA, Climate, Humidity, Precipitation, Temperature |
 | nasadem | yes | 2000-02-20 | 2000-02-20 | NASADEM HGT v001: NASA, JPL, Elevation, DEM, USGS, NGA, SRTM |
+| nested-eagle-conus | yes | 2024-10-01 | NA | NOAA Nested-EAGLE (CONUS): weather, forecast, AI, NOAA, EAGLE, HRRR, GFS, CONUS, global |
+| nested-eagle-global | yes | 2024-10-01 | NA | NOAA Nested-EAGLE (Global): weather, forecast, AI, NOAA, EAGLE, HRRR, GFS, CONUS, global |
 | noaa-c-cap | no | 1975-01-01 | 2016-12-31 | C-CAP Regional Land Cover and Change: Land Cover, Land Use, NOAA, Coastal |
 | noaa-cdr-ocean-heat-content | yes | 1972-03-01 | 2022-03-31 | Global Ocean Heat Content CDR: Global, Climate, NOAA, Temperature, Ocean |
 | noaa-cdr-ocean-heat-content-netcdf | yes | 1972-03-01 | 2022-03-31 | Global Ocean Heat Content CDR NetCDFs: Global, Climate, NOAA, Temperature, Ocean |
@@ -259,9 +261,9 @@ ndvi_list <- items$features |>
   purrr::map(spk_stac_calc, aoi = aoi, timing = TRUE) |>
   purrr::set_names(purrr::map_chr(items$features, "id"))
 #> ℹ read asset_a: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_a elapsed (s): 1.12
+#> ℹ read asset_a elapsed (s): 1.29
 #> ℹ read asset_b: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_b elapsed (s): 0.681
+#> ℹ read asset_b elapsed (s): 1.02
 ```
 
 Create a mapview object for each NDVI raster with a red-yellow-green
@@ -287,6 +289,9 @@ mv <- purrr::imap(
     )
   }
 )
+#> Registered S3 method overwritten by 'stars':
+#>   method                  from
+#>   st_interpolate_aw.stars sf
 ```
 
 Combine all layers into a single interactive map. Use the layer control
@@ -328,65 +333,65 @@ ndvi_by_year <- purrr::set_names(years) |>
       purrr::set_names(purrr::map_chr(items$features, "id"))
   })
 #> ℹ read asset_a: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_a elapsed (s): 0.007
+#> ℹ read asset_a elapsed (s): 0.01
 #> ℹ read asset_b: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_b elapsed (s): 0.006
+#> ℹ read asset_b elapsed (s): 0.009
 #> ℹ read asset_a: LE07_L2SP_051022_20050622_02_T1
-#> ℹ read asset_a elapsed (s): 0.725
+#> ℹ read asset_a elapsed (s): 0.89
 #> ℹ read asset_b: LE07_L2SP_051022_20050622_02_T1
-#> ℹ read asset_b elapsed (s): 0.722
+#> ℹ read asset_b elapsed (s): 0.733
 #> ℹ read asset_a: LE07_L2SP_051022_20100706_02_T1
-#> ℹ read asset_a elapsed (s): 0.783
+#> ℹ read asset_a elapsed (s): 0.905
 #> ℹ read asset_b: LE07_L2SP_051022_20100706_02_T1
-#> ℹ read asset_b elapsed (s): 0.638
+#> ℹ read asset_b elapsed (s): 0.779
 #> ℹ read asset_a: LE07_L2SP_051022_20100620_02_T1
-#> ℹ read asset_a elapsed (s): 0.748
+#> ℹ read asset_a elapsed (s): 0.892
 #> ℹ read asset_b: LE07_L2SP_051022_20100620_02_T1
-#> ℹ read asset_b elapsed (s): 0.638
+#> ℹ read asset_b elapsed (s): 0.721
 #> ℹ read asset_a: LT05_L2SP_052022_20100619_02_T1
-#> ℹ read asset_a elapsed (s): 0.745
+#> ℹ read asset_a elapsed (s): 0.885
 #> ℹ read asset_b: LT05_L2SP_052022_20100619_02_T1
-#> ℹ read asset_b elapsed (s): 0.594
+#> ℹ read asset_b elapsed (s): 0.718
 #> ℹ read asset_a: LE07_L2SP_051022_20150704_02_T1
-#> ℹ read asset_a elapsed (s): 0.809
+#> ℹ read asset_a elapsed (s): 0.868
 #> ℹ read asset_b: LE07_L2SP_051022_20150704_02_T1
-#> ℹ read asset_b elapsed (s): 0.722
+#> ℹ read asset_b elapsed (s): 0.723
 #> ℹ read asset_a: LC08_L2SP_052022_20150703_02_T1
-#> ℹ read asset_a elapsed (s): 0.702
+#> ℹ read asset_a elapsed (s): 0.874
 #> ℹ read asset_b: LC08_L2SP_052022_20150703_02_T1
-#> ℹ read asset_b elapsed (s): 0.615
+#> ℹ read asset_b elapsed (s): 0.743
 #> ℹ read asset_a: LC08_L2SP_051022_20150626_02_T1
-#> ℹ read asset_a elapsed (s): 0.702
+#> ℹ read asset_a elapsed (s): 0.973
 #> ℹ read asset_b: LC08_L2SP_051022_20150626_02_T1
-#> ℹ read asset_b elapsed (s): 0.59
+#> ℹ read asset_b elapsed (s): 0.768
 #> ℹ read asset_a: LE07_L2SP_052022_20150609_02_T1
-#> ℹ read asset_a elapsed (s): 0.701
+#> ℹ read asset_a elapsed (s): 0.881
 #> ℹ read asset_b: LE07_L2SP_052022_20150609_02_T1
-#> ℹ read asset_b elapsed (s): 0.592
+#> ℹ read asset_b elapsed (s): 0.722
 #> ℹ read asset_a: LC08_L2SP_052022_20150601_02_T1
-#> ℹ read asset_a elapsed (s): 0.718
+#> ℹ read asset_a elapsed (s): 0.877
 #> ℹ read asset_b: LC08_L2SP_052022_20150601_02_T1
-#> ℹ read asset_b elapsed (s): 0.594
+#> ℹ read asset_b elapsed (s): 0.709
 #> ℹ read asset_a: LC08_L2SP_051022_20200709_02_T1
-#> ℹ read asset_a elapsed (s): 0.723
+#> ℹ read asset_a elapsed (s): 0.853
 #> ℹ read asset_b: LC08_L2SP_051022_20200709_02_T1
-#> ℹ read asset_b elapsed (s): 0.586
+#> ℹ read asset_b elapsed (s): 0.711
 #> ℹ read asset_a: LE07_L2SP_050022_20200624_02_T1
-#> ℹ read asset_a elapsed (s): 0.701
+#> ℹ read asset_a elapsed (s): 0.944
 #> ℹ read asset_b: LE07_L2SP_050022_20200624_02_T1
-#> ℹ read asset_b elapsed (s): 0.603
+#> ℹ read asset_b elapsed (s): 0.732
 #> ℹ read asset_a: LC08_L2SP_052022_20250714_02_T1
-#> ℹ read asset_a elapsed (s): 0.698
+#> ℹ read asset_a elapsed (s): 0.869
 #> ℹ read asset_b: LC08_L2SP_052022_20250714_02_T1
-#> ℹ read asset_b elapsed (s): 0.575
+#> ℹ read asset_b elapsed (s): 0.702
 #> ℹ read asset_a: LC09_L2SP_052022_20250620_02_T1
-#> ℹ read asset_a elapsed (s): 0.69
+#> ℹ read asset_a elapsed (s): 0.875
 #> ℹ read asset_b: LC09_L2SP_052022_20250620_02_T1
-#> ℹ read asset_b elapsed (s): 0.583
+#> ℹ read asset_b elapsed (s): 0.711
 #> ℹ read asset_a: LC09_L2SP_052022_20250604_02_T1
-#> ℹ read asset_a elapsed (s): 0.687
+#> ℹ read asset_a elapsed (s): 0.859
 #> ℹ read asset_b: LC09_L2SP_052022_20250604_02_T1
-#> ℹ read asset_b elapsed (s): 0.575
+#> ℹ read asset_b elapsed (s): 0.715
 
 ndvi_best_by_year <- ndvi_by_year |>
   purrr::map(function(ndvi_list) {
