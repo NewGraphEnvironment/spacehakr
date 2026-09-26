@@ -1,0 +1,29 @@
+# ------------------------------------------------
+# CITATION.cff file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# ------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "spacehakr" in publications use:'
+type: software
+license: MIT
+title: 'spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access'
+version: 0.4.0
+abstract: Tools for spatial analysis, raster processing, and geospatial data access.
+  Includes functions for GDAL/OpenDroneMap command building, GeoServer WFS downloads,
+  STAC catalog queries, spatial joins, and raster operations. Extracted from the ngr
+  package's ngr_spk_* function family.
+authors:
+- family-names: Irvine
+  given-names: Allan
+  email: al@newgraphenvironment.com
+  orcid: https://orcid.org/0000-0002-3495-2128
+repository-code: https://github.com/NewGraphEnvironment/spacehakr
+url: https://newgraphenvironment.github.io/spacehakr/
+date-released: '2026-09-04'
+contact:
+- family-names: Irvine
+  given-names: Allan
+  email: al@newgraphenvironment.com
+  orcid: https://orcid.org/0000-0002-3495-2128
+
