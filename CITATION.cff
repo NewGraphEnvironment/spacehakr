@@ -18,6 +18,23 @@ authors:
   given-names: Allan
   email: al@newgraphenvironment.com
   orcid: https://orcid.org/0000-0002-3495-2128
+  affiliation: New Graph Environment Ltd.
+preferred-citation:
+  title: 'spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access'
+  authors:
+  - family-names: Irvine
+    given-names: Allan
+    email: al@newgraphenvironment.com
+    orcid: https://orcid.org/0000-0002-3495-2128
+    affiliation: New Graph Environment Ltd.
+  version: 0.4.0
+  date-released: '2026-09-04'
+  url: https://newgraphenvironment.github.io/spacehakr/
+  repository-code: https://github.com/NewGraphEnvironment/spacehakr
+  license: MIT
+  type: software
+  publisher:
+    name: New Graph Environment Ltd.
 repository-code: https://github.com/NewGraphEnvironment/spacehakr
 url: https://newgraphenvironment.github.io/spacehakr/
 date-released: '2026-09-04'
@@ -26,4 +43,5 @@ contact:
   given-names: Allan
   email: al@newgraphenvironment.com
   orcid: https://orcid.org/0000-0002-3495-2128
+  affiliation: New Graph Environment Ltd.
 

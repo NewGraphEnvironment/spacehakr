@@ -2,9 +2,12 @@ Package: spacehakr
 Title: Spatial Analysis, Raster Processing, and Geospatial Data Access
 Version: 0.4.0
 Date: 2026-09-04
-Authors@R: 
+Authors@R: c(
     person("Allan", "Irvine", , "al@newgraphenvironment.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-3495-2128"))
+           comment = c(ORCID = "0000-0002-3495-2128",
+                       affiliation = "New Graph Environment Ltd.")),
+    person("New Graph Environment Ltd.", role = c("cph", "fnd"))
+    )
 Description: Tools for spatial analysis, raster processing, and geospatial data 
     access. Includes functions for GDAL/OpenDroneMap command building, GeoServer 
     WFS downloads, STAC catalog queries, spatial joins, and raster operations.
