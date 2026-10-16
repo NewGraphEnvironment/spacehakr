@@ -172,6 +172,7 @@ collections_df |>
 | noaa-climate-normals-gridded | no | 1901-01-01 | 2020-12-31 | NOAA US Gridded Climate Normals (Cloud-Optimized GeoTIFF): NOAA, Climate Normals, Weather, Surface Observations, Climatology, CONUS |
 | noaa-climate-normals-netcdf | no | 1901-01-01 | 2020-12-31 | NOAA US Gridded Climate Normals (NetCDF): NOAA, Climate Normals, Weather, Surface Observations, Climatology, CONUS |
 | noaa-climate-normals-tabular | yes | 1981-01-01 | 2020-12-31 | NOAA US Tabular Climate Normals: NOAA, Climate Normals, Weather, Surface Observations, Climatology, CONUS |
+| noaa-hrrr | yes | 2021-03-21 | NA | NOAA High Resolution Rapid Refresh (HRRR): NOAA, HRRR, forecast, atmospheric, weather |
 | noaa-mrms-qpe-1h-pass1 | yes | 2022-07-21 | NA | NOAA MRMS QPE 1-Hour Pass 1: NOAA, MRMS, QPE, Precipitation, Weather, United States, Guam, Caribbean |
 | noaa-mrms-qpe-1h-pass2 | yes | 2022-07-21 | NA | NOAA MRMS QPE 1-Hour Pass 2: NOAA, MRMS, QPE, Precipitation, Weather, United States, Guam, Caribbean |
 | noaa-mrms-qpe-24h-pass2 | yes | 2022-07-21 | NA | NOAA MRMS QPE 24-Hour Pass 2: NOAA, MRMS, QPE, Precipitation, Weather, United States, Guam, Caribbean |
@@ -261,9 +262,9 @@ ndvi_list <- items$features |>
   purrr::map(spk_stac_calc, aoi = aoi, timing = TRUE) |>
   purrr::set_names(purrr::map_chr(items$features, "id"))
 #> ℹ read asset_a: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_a elapsed (s): 0.859
+#> ℹ read asset_a elapsed (s): 0.868
 #> ℹ read asset_b: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_b elapsed (s): 0.679
+#> ℹ read asset_b elapsed (s): 0.529
 ```
 
 Create a mapview object for each NDVI raster with a red-yellow-green
@@ -333,65 +334,65 @@ ndvi_by_year <- purrr::set_names(years) |>
       purrr::set_names(purrr::map_chr(items$features, "id"))
   })
 #> ℹ read asset_a: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_a elapsed (s): 0.007
+#> ℹ read asset_a elapsed (s): 0.01
 #> ℹ read asset_b: LE07_L2SP_051022_20000624_02_T1
-#> ℹ read asset_b elapsed (s): 0.007
+#> ℹ read asset_b elapsed (s): 0.009
 #> ℹ read asset_a: LE07_L2SP_051022_20050622_02_T1
-#> ℹ read asset_a elapsed (s): 0.59
+#> ℹ read asset_a elapsed (s): 0.57
 #> ℹ read asset_b: LE07_L2SP_051022_20050622_02_T1
-#> ℹ read asset_b elapsed (s): 0.52
-#> ℹ read asset_a: LE07_L2SP_051022_20100706_02_T1
-#> ℹ read asset_a elapsed (s): 0.577
-#> ℹ read asset_b: LE07_L2SP_051022_20100706_02_T1
-#> ℹ read asset_b elapsed (s): 0.488
-#> ℹ read asset_a: LE07_L2SP_051022_20100620_02_T1
-#> ℹ read asset_a elapsed (s): 0.566
-#> ℹ read asset_b: LE07_L2SP_051022_20100620_02_T1
-#> ℹ read asset_b elapsed (s): 0.56
-#> ℹ read asset_a: LT05_L2SP_052022_20100619_02_T1
-#> ℹ read asset_a elapsed (s): 0.601
-#> ℹ read asset_b: LT05_L2SP_052022_20100619_02_T1
-#> ℹ read asset_b elapsed (s): 0.518
-#> ℹ read asset_a: LE07_L2SP_051022_20150704_02_T1
-#> ℹ read asset_a elapsed (s): 0.585
-#> ℹ read asset_b: LE07_L2SP_051022_20150704_02_T1
-#> ℹ read asset_b elapsed (s): 0.506
-#> ℹ read asset_a: LC08_L2SP_052022_20150703_02_T1
-#> ℹ read asset_a elapsed (s): 0.591
-#> ℹ read asset_b: LC08_L2SP_052022_20150703_02_T1
-#> ℹ read asset_b elapsed (s): 0.502
-#> ℹ read asset_a: LC08_L2SP_051022_20150626_02_T1
-#> ℹ read asset_a elapsed (s): 0.618
-#> ℹ read asset_b: LC08_L2SP_051022_20150626_02_T1
-#> ℹ read asset_b elapsed (s): 0.522
-#> ℹ read asset_a: LE07_L2SP_052022_20150609_02_T1
-#> ℹ read asset_a elapsed (s): 0.603
-#> ℹ read asset_b: LE07_L2SP_052022_20150609_02_T1
-#> ℹ read asset_b elapsed (s): 0.502
-#> ℹ read asset_a: LC08_L2SP_052022_20150601_02_T1
-#> ℹ read asset_a elapsed (s): 0.591
-#> ℹ read asset_b: LC08_L2SP_052022_20150601_02_T1
-#> ℹ read asset_b elapsed (s): 0.498
-#> ℹ read asset_a: LC08_L2SP_051022_20200709_02_T1
-#> ℹ read asset_a elapsed (s): 0.659
-#> ℹ read asset_b: LC08_L2SP_051022_20200709_02_T1
-#> ℹ read asset_b elapsed (s): 0.484
-#> ℹ read asset_a: LE07_L2SP_050022_20200624_02_T1
-#> ℹ read asset_a elapsed (s): 0.608
-#> ℹ read asset_b: LE07_L2SP_050022_20200624_02_T1
-#> ℹ read asset_b elapsed (s): 0.476
-#> ℹ read asset_a: LC08_L2SP_052022_20250714_02_T1
-#> ℹ read asset_a elapsed (s): 0.553
-#> ℹ read asset_b: LC08_L2SP_052022_20250714_02_T1
-#> ℹ read asset_b elapsed (s): 0.464
-#> ℹ read asset_a: LC09_L2SP_052022_20250620_02_T1
-#> ℹ read asset_a elapsed (s): 0.554
-#> ℹ read asset_b: LC09_L2SP_052022_20250620_02_T1
 #> ℹ read asset_b elapsed (s): 0.466
+#> ℹ read asset_a: LE07_L2SP_051022_20100706_02_T1
+#> ℹ read asset_a elapsed (s): 0.652
+#> ℹ read asset_b: LE07_L2SP_051022_20100706_02_T1
+#> ℹ read asset_b elapsed (s): 0.57
+#> ℹ read asset_a: LE07_L2SP_051022_20100620_02_T1
+#> ℹ read asset_a elapsed (s): 0.588
+#> ℹ read asset_b: LE07_L2SP_051022_20100620_02_T1
+#> ℹ read asset_b elapsed (s): 0.457
+#> ℹ read asset_a: LT05_L2SP_052022_20100619_02_T1
+#> ℹ read asset_a elapsed (s): 0.571
+#> ℹ read asset_b: LT05_L2SP_052022_20100619_02_T1
+#> ℹ read asset_b elapsed (s): 0.471
+#> ℹ read asset_a: LE07_L2SP_051022_20150704_02_T1
+#> ℹ read asset_a elapsed (s): 0.565
+#> ℹ read asset_b: LE07_L2SP_051022_20150704_02_T1
+#> ℹ read asset_b elapsed (s): 0.474
+#> ℹ read asset_a: LC08_L2SP_052022_20150703_02_T1
+#> ℹ read asset_a elapsed (s): 0.545
+#> ℹ read asset_b: LC08_L2SP_052022_20150703_02_T1
+#> ℹ read asset_b elapsed (s): 0.453
+#> ℹ read asset_a: LC08_L2SP_051022_20150626_02_T1
+#> ℹ read asset_a elapsed (s): 0.607
+#> ℹ read asset_b: LC08_L2SP_051022_20150626_02_T1
+#> ℹ read asset_b elapsed (s): 0.481
+#> ℹ read asset_a: LE07_L2SP_052022_20150609_02_T1
+#> ℹ read asset_a elapsed (s): 0.614
+#> ℹ read asset_b: LE07_L2SP_052022_20150609_02_T1
+#> ℹ read asset_b elapsed (s): 0.487
+#> ℹ read asset_a: LC08_L2SP_052022_20150601_02_T1
+#> ℹ read asset_a elapsed (s): 0.574
+#> ℹ read asset_b: LC08_L2SP_052022_20150601_02_T1
+#> ℹ read asset_b elapsed (s): 0.475
+#> ℹ read asset_a: LC08_L2SP_051022_20200709_02_T1
+#> ℹ read asset_a elapsed (s): 0.717
+#> ℹ read asset_b: LC08_L2SP_051022_20200709_02_T1
+#> ℹ read asset_b elapsed (s): 0.498
+#> ℹ read asset_a: LE07_L2SP_050022_20200624_02_T1
+#> ℹ read asset_a elapsed (s): 0.587
+#> ℹ read asset_b: LE07_L2SP_050022_20200624_02_T1
+#> ℹ read asset_b elapsed (s): 0.463
+#> ℹ read asset_a: LC08_L2SP_052022_20250714_02_T1
+#> ℹ read asset_a elapsed (s): 0.556
+#> ℹ read asset_b: LC08_L2SP_052022_20250714_02_T1
+#> ℹ read asset_b elapsed (s): 0.475
+#> ℹ read asset_a: LC09_L2SP_052022_20250620_02_T1
+#> ℹ read asset_a elapsed (s): 0.682
+#> ℹ read asset_b: LC09_L2SP_052022_20250620_02_T1
+#> ℹ read asset_b elapsed (s): 0.457
 #> ℹ read asset_a: LC09_L2SP_052022_20250604_02_T1
-#> ℹ read asset_a elapsed (s): 0.554
+#> ℹ read asset_a elapsed (s): 0.569
 #> ℹ read asset_b: LC09_L2SP_052022_20250604_02_T1
-#> ℹ read asset_b elapsed (s): 0.467
+#> ℹ read asset_b elapsed (s): 0.5
 
 ndvi_best_by_year <- ndvi_by_year |>
   purrr::map(function(ndvi_list) {

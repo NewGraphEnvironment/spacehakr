@@ -172,6 +172,7 @@ collections_df |>
 | noaa-climate-normals-gridded | no | 1901-01-01 | 2020-12-31 | NOAA US Gridded Climate Normals (Cloud-Optimized GeoTIFF): NOAA, Climate Normals, Weather, Surface Observations, Climatology, CONUS |
 | noaa-climate-normals-netcdf | no | 1901-01-01 | 2020-12-31 | NOAA US Gridded Climate Normals (NetCDF): NOAA, Climate Normals, Weather, Surface Observations, Climatology, CONUS |
 | noaa-climate-normals-tabular | yes | 1981-01-01 | 2020-12-31 | NOAA US Tabular Climate Normals: NOAA, Climate Normals, Weather, Surface Observations, Climatology, CONUS |
+| noaa-hrrr | yes | 2021-03-21 | NA | NOAA High Resolution Rapid Refresh (HRRR): NOAA, HRRR, forecast, atmospheric, weather |
 | noaa-mrms-qpe-1h-pass1 | yes | 2022-07-21 | NA | NOAA MRMS QPE 1-Hour Pass 1: NOAA, MRMS, QPE, Precipitation, Weather, United States, Guam, Caribbean |
 | noaa-mrms-qpe-1h-pass2 | yes | 2022-07-21 | NA | NOAA MRMS QPE 1-Hour Pass 2: NOAA, MRMS, QPE, Precipitation, Weather, United States, Guam, Caribbean |
 | noaa-mrms-qpe-24h-pass2 | yes | 2022-07-21 | NA | NOAA MRMS QPE 24-Hour Pass 2: NOAA, MRMS, QPE, Precipitation, Weather, United States, Guam, Caribbean |
