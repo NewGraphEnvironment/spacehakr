@@ -14,15 +14,15 @@ Source:
 [`inst/CITATION`](https://github.com/NewGraphEnvironment/spacehakr/blob/main/inst/CITATION)
 
 Irvine A (2026). *spacehakr: Spatial Analysis, Raster Processing, and
-Geospatial Data Access*. New Graph Environment Ltd. R package version
-0.4.0, <https://github.com/NewGraphEnvironment/spacehakr>.
+Geospatial Data Access*. New Graph Environment Ltd. Version 0.4.0,
+<https://github.com/NewGraphEnvironment/spacehakr>.
 
-    @Manual{,
+    @Manual{spacehakr,
       title = {spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access},
       author = {Allan Irvine},
       organization = {New Graph Environment Ltd.},
       year = {2026},
       version = {0.4.0},
-      note = {R package version 0.4.0},
+      note = {Version 0.4.0},
       url = {https://github.com/NewGraphEnvironment/spacehakr},
     }
