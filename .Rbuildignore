@@ -11,3 +11,4 @@
 ^\.git$
 ^planning$
 ^vignettes/articles$
+^CITATION\.cff$
