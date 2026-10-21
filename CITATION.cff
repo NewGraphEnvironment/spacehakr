@@ -4,11 +4,12 @@
 # ------------------------------------------------
  
 cff-version: 1.2.0
-message: 'To cite package "spacehakr" in publications use:'
+message: If you use spacehakr, please cite it by its DOI, 10.5281/zenodo.23524742.
 type: software
 license: MIT
 title: 'spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access'
 version: 0.4.1
+doi: 10.5281/zenodo.23524742
 abstract: Tools for spatial analysis, raster processing, and geospatial data access.
   Includes functions for GDAL/OpenDroneMap command building, GeoServer WFS downloads,
   STAC catalog queries, spatial joins, and raster operations. Extracted from the ngr
@@ -32,6 +33,7 @@ preferred-citation:
   url: https://newgraphenvironment.github.io/spacehakr/
   repository-code: https://github.com/NewGraphEnvironment/spacehakr
   license: MIT
+  doi: 10.5281/zenodo.23524742
   type: software
   publisher:
     name: New Graph Environment Ltd.
