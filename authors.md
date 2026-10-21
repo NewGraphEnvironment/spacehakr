@@ -11,11 +11,12 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/NewGraphEnvironment/spacehakr/blob/v0.4.1/inst/CITATION)
+[`inst/CITATION`](https://github.com/NewGraphEnvironment/spacehakr/blob/main/inst/CITATION)
 
 Irvine A (2026). *spacehakr: Spatial Analysis, Raster Processing, and
-Geospatial Data Access*. New Graph Environment Ltd. Version 0.4.1,
-<https://github.com/NewGraphEnvironment/spacehakr>.
+Geospatial Data Access*. New Graph Environment Ltd.
+[doi:10.5281/zenodo.23524742](https://doi.org/10.5281/zenodo.23524742).
+Version 0.4.1, <https://github.com/NewGraphEnvironment/spacehakr>.
 
     @Manual{spacehakr,
       title = {spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access},
@@ -25,4 +26,5 @@ Geospatial Data Access*. New Graph Environment Ltd. Version 0.4.1,
       version = {0.4.1},
       note = {Version 0.4.1},
       url = {https://github.com/NewGraphEnvironment/spacehakr},
+      doi = {10.5281/zenodo.23524742},
     }
