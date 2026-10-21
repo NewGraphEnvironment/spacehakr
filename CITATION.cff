@@ -8,7 +8,7 @@ message: 'To cite package "spacehakr" in publications use:'
 type: software
 license: MIT
 title: 'spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access'
-version: 0.4.0
+version: 0.4.1
 abstract: Tools for spatial analysis, raster processing, and geospatial data access.
   Includes functions for GDAL/OpenDroneMap command building, GeoServer WFS downloads,
   STAC catalog queries, spatial joins, and raster operations. Extracted from the ngr
@@ -27,8 +27,8 @@ preferred-citation:
     email: al@newgraphenvironment.com
     orcid: https://orcid.org/0000-0002-3495-2128
     affiliation: New Graph Environment Ltd.
-  version: 0.4.0
-  date-released: '2026-09-04'
+  version: 0.4.1
+  date-released: '2026-10-21'
   url: https://newgraphenvironment.github.io/spacehakr/
   repository-code: https://github.com/NewGraphEnvironment/spacehakr
   license: MIT
@@ -37,7 +37,7 @@ preferred-citation:
     name: New Graph Environment Ltd.
 repository-code: https://github.com/NewGraphEnvironment/spacehakr
 url: https://newgraphenvironment.github.io/spacehakr/
-date-released: '2026-09-04'
+date-released: '2026-10-21'
 contact:
 - family-names: Irvine
   given-names: Allan
