@@ -16,15 +16,15 @@ Source:
 Irvine A (2026). *spacehakr: Spatial Analysis, Raster Processing, and
 Geospatial Data Access*. New Graph Environment Ltd.
 [doi:10.5281/zenodo.23524742](https://doi.org/10.5281/zenodo.23524742).
-Version 0.4.1, <https://github.com/NewGraphEnvironment/spacehakr>.
+Version 0.4.2, <https://github.com/NewGraphEnvironment/spacehakr>.
 
     @Manual{spacehakr,
       title = {spacehakr: Spatial Analysis, Raster Processing, and Geospatial Data Access},
       author = {Allan Irvine},
       organization = {New Graph Environment Ltd.},
       year = {2026},
-      version = {0.4.1},
-      note = {Version 0.4.1},
+      version = {0.4.2},
+      note = {Version 0.4.2},
       url = {https://github.com/NewGraphEnvironment/spacehakr},
       doi = {10.5281/zenodo.23524742},
     }
