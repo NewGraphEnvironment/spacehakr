@@ -72,7 +72,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>STAC spectral indices with spk_stac_calc</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/NewGraphEnvironment/spacehakr/blob/main/vignettes/articles/stac-spectral-indices.Rmd" class="external-link"><code>vignettes/articles/stac-spectral-indices.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/NewGraphEnvironment/spacehakr/blob/v0.4.2/vignettes/articles/stac-spectral-indices.Rmd" class="external-link"><code>vignettes/articles/stac-spectral-indices.Rmd</code></a></small>
       <div class="d-none name"><code>stac-spectral-indices.Rmd</code></div>
     </div>
 
@@ -2691,9 +2691,9 @@ GDAL’s VSI interface and calculates
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">spk_stac_calc</span>, aoi <span class="op">=</span> <span class="va">aoi</span>, timing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/set_names.html" class="external-link">set_names</a></span><span class="op">(</span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">items</span><span class="op">$</span><span class="va">features</span>, <span class="st">"id"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_051022_20000624_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 1.03</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 1.46</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_051022_20000624_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.619</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.855</span></span></code></pre></div>
 <p>Create a mapview object for each NDVI raster with a red-yellow-green
 color scale.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -2755,65 +2755,65 @@ This helps identify scenes with peak growing-season conditions.</p>
 <span>      <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/set_names.html" class="external-link">set_names</a></span><span class="op">(</span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_chr</a></span><span class="op">(</span><span class="va">items</span><span class="op">$</span><span class="va">features</span>, <span class="st">"id"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_051022_20000624_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.01</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.011</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_051022_20000624_02_T1</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.009</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_051022_20050622_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.667</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 1</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_051022_20050622_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.553</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.874</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_051022_20100706_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.645</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.975</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_051022_20100706_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.545</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.801</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_051022_20100620_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.65</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.981</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_051022_20100620_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.539</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.804</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LT05_L2SP_052022_20100619_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.652</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.998</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LT05_L2SP_052022_20100619_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.56</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.801</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_051022_20150704_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.651</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.951</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_051022_20150704_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.585</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.798</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC08_L2SP_052022_20150703_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.64</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.947</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC08_L2SP_052022_20150703_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.535</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.825</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC08_L2SP_051022_20150626_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.643</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.958</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC08_L2SP_051022_20150626_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.576</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.797</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_052022_20150609_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.659</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.946</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_052022_20150609_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.552</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.796</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC08_L2SP_052022_20150601_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.637</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.95</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC08_L2SP_052022_20150601_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.558</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.789</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC08_L2SP_051022_20200709_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.638</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.944</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC08_L2SP_051022_20200709_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.541</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.795</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LE07_L2SP_050022_20200624_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.661</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.968</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LE07_L2SP_050022_20200624_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.572</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.811</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC08_L2SP_052022_20250714_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.669</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.962</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC08_L2SP_052022_20250714_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.565</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.83</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC09_L2SP_052022_20250620_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.771</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.969</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC09_L2SP_052022_20250620_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.568</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.832</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a: LC09_L2SP_052022_20250604_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.689</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_a elapsed (s): 0.982</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b: LC09_L2SP_052022_20250604_02_T1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.583</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> read asset_b elapsed (s): 0.818</span></span>
 <span></span>
 <span><span class="va">ndvi_best_by_year</span> <span class="op">&lt;-</span> <span class="va">ndvi_by_year</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">ndvi_list</span><span class="op">)</span> <span class="op">{</span></span>

@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/NewGraphEnvironment/spacehakr/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/NewGraphEnvironment/spacehakr/blob/v0.4.2/inst/CITATION)
 
 Irvine A (2026). *spacehakr: Spatial Analysis, Raster Processing, and
 Geospatial Data Access*. New Graph Environment Ltd.
