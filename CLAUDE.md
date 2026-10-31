@@ -125,23 +125,9 @@ Use lintr for static analysis. Follow the default tidyverse style with:
 - Never silently swallow errors or warnings
 - Document expected types in `@param`
 
-## Commit Style (fledge)
+## NEWS
 
-This repo uses [fledge](https://github.com/cynkra/fledge) for changelog management.
-
-**NEWS-worthy commits** start with `- ` (bullet point):
-```
-- initial commit of [spk_join()] to close [#1](https://github.com/NewGraphEnvironment/spacehakr/issues/1)
-```
-
-**Function references** use square brackets for pkgdown auto-links: `[spk_join()]`
-
-**Issue references** use full markdown links: `[#1](https://github.com/NewGraphEnvironment/spacehakr/issues/1)`
-
-**Non-NEWS commits** (docs, chores) don't start with `- `:
-```
-rebuild documentation and update build config
-```
+`NEWS.md` is written by hand when a release is cut. Commit messages need no special prefix.
 
 ## DESCRIPTION Management
 
