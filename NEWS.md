@@ -1,3 +1,9 @@
+# spacehakr 0.4.2
+
+No change to the package's functions.
+
+- `Config/DOI` in `DESCRIPTION` carries the package's Zenodo concept DOI, so a citation of spacehakr can name the archived record.
+
 # spacehakr 0.4.1
 
 No change to the package's functions. This release exists so the package has a citable, archived version.
